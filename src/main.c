@@ -1,6 +1,3 @@
-#define SUCCESS 1
-#define FAILURE 0
-
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,18 +62,18 @@ int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOpt
     return highlight;
 }
 
-int runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
+void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
     if(yMax <= startHeight || xMax <= startWidth){
         fprintf(stderr,"Terminal window too small!");
         getch();
         endwin();
-        return FAILURE;
+        exit(EXIT_FAILURE);
     }
 
     Window *startScreen= newwin(startHeight,startWidth,(yMax-startHeight)/2,(xMax-startWidth)/2);
     if(!startScreen){
         fprintf(stderr,"Allocation of start screen failed!");
-        return FAILURE;
+        exit(EXIT_FAILURE);
     }
 
     refresh();
@@ -89,11 +86,9 @@ int runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
 
     wrefresh(startScreen);
     getch();
-
-    return SUCCESS;
 }
 
-int setupGameWin(int yMax, int xMax){
+void* setupGameWin(int yMax, int xMax){
     float relSize = 1.5; // ~1/3 of terminal should be border
     int boundY = (int)(yMax/relSize);
     int boundX = (int)(xMax/relSize);
@@ -101,13 +96,17 @@ int setupGameWin(int yMax, int xMax){
     int borderLR = (xMax-boundX)/2;
 
     GameWindow *gameWin = calloc(1,sizeof(GameWindow));
+    if(!gameWin){
+        fprintf(stderr,"Allocation of start screen failed!");
+        return FAILURE;
+    }
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
     refresh();
     box(gameWin->W,0,0);
     wrefresh(gameWin->W);
 
-    return SUCCESS;
+    return (void*)gameWin;
 }
 
 int main(){
@@ -116,13 +115,11 @@ int main(){
     curs_set(0);
     cbreak();
 
-    int yMax, xMax, renderStatus, startHeight, startWidth, res;
+    int yMax, xMax, renderStatus, startHeight, startWidth;
     getmaxyx(stdscr,yMax,xMax);
 
-    res = runStartScreen(startHeight=20,startWidth=80,yMax,xMax);
-    if(res == FAILURE) return EXIT_FAILURE;
-    res = setupGameWin(yMax,xMax);
-    if(res == FAILURE) return EXIT_FAILURE;
+    runStartScreen(startHeight=20,startWidth=80,yMax,xMax);
+    GameWindow* gameWindow = (GameWindow*)setupGameWin(yMax,xMax);
 
 
     getch();
