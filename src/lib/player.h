@@ -12,7 +12,7 @@ typedef struct {
     Coord* loc;
 } Player;
 
-void addPlayer(GameWindow* GW);
+void initializePlayer(GameWindow* GW);
 void moveLeft(GameWindow* GW);
 void moveRight(GameWindow* GW);
 void shootProjectile(GameWindow* GW);

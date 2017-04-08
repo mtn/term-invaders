@@ -1,10 +1,13 @@
-#define K_ENTER 10 // KEY_ENTER is defined to something else by ncurses
+#define K_ENTER       10 // KEY_ENTER is defined to something else by ncurses
+#define MIN_WIDTH    120
+#define MIN_HEIGHT    30
 
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <locale.h>
 
 #include "lib/main.h"
 #include "lib/enemy.h"
@@ -109,11 +112,20 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
 }
 
 GameWindow* setupGame(int yMax, int xMax){
-    float relSize = 1.5; // ~1/3 of terminal should be border
+    float relSize = 1.2; // 5/6 of terminal should be border
     int boundY = (int)(yMax/relSize);
     int boundX = (int)(xMax/relSize);
     int borderTB = (yMax-boundY)/2;
     int borderLR = (xMax-boundX)/2;
+
+    // Compare to minimum dimensions, which are based on size of enemies to be displayed
+    if(boundY < MIN_HEIGHT || boundX < MIN_WIDTH){
+        clear();
+        printw("Terminal size too small! Resize window to play game!");
+        getch();
+        endwin();
+        exit(EXIT_FAILURE);
+    }
 
     GameWindow *gameWin = calloc(1,sizeof(GameWindow));
     if(!gameWin){
@@ -133,23 +145,34 @@ GameWindow* setupGame(int yMax, int xMax){
 }
 
 void runGame(GameWindow* gameWin){
+    initializePlayer(gameWin);
+    initializeEnemies(gameWin);
+
     renderPlayer(gameWin);
+    renderEnemies(gameWin);
+    wrefresh(gameWin->W);
+    cbreak();
+    getch();
 }
 
 int main(){
+    setlocale(LC_ALL, "");
     initscr();
     noecho();
     curs_set(0);
     cbreak();
+
+    start_color();
+    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 
     int yMax, xMax, renderStatus, startHeight, startWidth;
     getmaxyx(stdscr,yMax,xMax);
 
     runStartScreen(startHeight=20,startWidth=80,yMax,xMax);
     GameWindow* gameWin = setupGame(yMax,xMax);
-    addPlayer(gameWin);
-    /* addEnemies(gameWin); */
     runGame(gameWin);
+    cbreak();
 
     delwin(gameWin->W);
     getch();

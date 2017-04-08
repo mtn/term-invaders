@@ -4,7 +4,7 @@
 
 #include "lib/player.h"
 
-void addPlayer(GameWindow* gameWin){
+void initializePlayer(GameWindow* gameWin){
     int maxY, maxX;
     getmaxyx(gameWin->W,maxY,maxX);
 
@@ -12,8 +12,7 @@ void addPlayer(GameWindow* gameWin){
     P->health = MAX_HEALTH;
     Coord *playerLoc = calloc(1,sizeof(Coord));
     playerLoc->x = (int)(maxX/2);
-    playerLoc->y = maxY-3;
-    P->loc = playerLoc;
+    playerLoc->y = maxY-3; P->loc = playerLoc;
     gameWin->P = P;
 }
 
@@ -30,8 +29,12 @@ void shootProjectile(GameWindow* GW){
 }
 
 void renderPlayer(GameWindow* gameWin){
-    Player* P = (Player*)gameWin->P;
-    wmvaddch(gameWin->W,P->loc->y,P->loc->x,'^');
+    attron(COLOR_PAIR(1));
+    mvwaddstr(gameWin->W,((Player*)gameWin->P)->loc->y-3, ((Player*)gameWin->P)->loc->x, "    ▄█▄    ");
+    mvwaddstr(gameWin->W,((Player*)gameWin->P)->loc->y-2, ((Player*)gameWin->P)->loc->x, "▄█████████▄");
+    mvwaddstr(gameWin->W,((Player*)gameWin->P)->loc->y-1, ((Player*)gameWin->P)->loc->x, "▀▀▀▀▀▀▀▀▀▀▀");
+    attroff(COLOR_PAIR(1));
+    /* wmvaddch(gameWin->W,P->loc->y,P->loc->x,'^'); */
     wrefresh(gameWin->W);
 }
 

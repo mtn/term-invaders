@@ -14,10 +14,10 @@ typedef enum {NEAR, MEDIUM, FAR, UFO} EnemyType;
 typedef struct {
     bool isAlive;
     EnemyType type;
-    Coord C;
+    Coord *loc;
 } Enemy;
 
-void addEnemies(GameWindow* GW);
+void initializeEnemies(GameWindow* GW);
 void shiftLeft(GameWindow* GW);
 void shiftRight(GameWindow* GW);
 void renderEnemies(GameWindow* GW);

@@ -1,7 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define MAX_ENEMIES 40
+#define MAX_ENEMIES 55
 
 #include <ncurses.h>
 #include <stdbool.h>
@@ -17,7 +17,7 @@ typedef struct {
 typedef struct {
     Window* W;
     void* P; // Player
-    void* E[MAX_ENEMIES];
+    void** E;
     // projectiles? Could be very similar to enemies given lim
 } GameWindow;
 
