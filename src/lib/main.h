@@ -1,6 +1,8 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#define MAX_ENEMIES 40
+
 #include <ncurses.h>
 #include <stdbool.h>
 
@@ -8,14 +10,16 @@
 typedef WINDOW Window;
 
 typedef struct {
-    Window* W;
-    // player position?? projectile position?
-} GameWindow;
-
-typedef struct {
     int x;
     int y;
 } Coord, *CoordPtr;
+
+typedef struct {
+    Window* W;
+    Player* P;
+    Enemy* E[MAX_ENEMIES];
+    // player position?? projectile position?
+} GameWindow;
 
 bool wmvaddch(Window* W, int y, int x, int ch);
 int toOneD(int y, int x, int maxX);

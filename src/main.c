@@ -1,3 +1,5 @@
+#define K_ENTER 10 // KEY_ENTER is defined to something else by ncurses
+
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,14 +59,14 @@ int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOpt
         refresh();
         // wgetch 10  -> enter -> no more rendering
         wrefresh(W);
-        if(choice==10) break;
+        if(choice==K_ENTER) break;
     }
     return highlight;
 }
 
 void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
     if(yMax <= startHeight || xMax <= startWidth){
-        fprintf(stderr,"Terminal window too small!");
+        printw("Terminal window too small!");
         getch();
         endwin();
         exit(EXIT_FAILURE);
@@ -73,6 +75,7 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
     Window *startScreen= newwin(startHeight,startWidth,(yMax-startHeight)/2,(xMax-startWidth)/2);
     if(!startScreen){
         fprintf(stderr,"Allocation of start screen failed!");
+        endwin();
         exit(EXIT_FAILURE);
     }
 
@@ -84,11 +87,28 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
     mvwprintw(startScreen,1,(startWidth-strlen(title))/2,title);
     wattroff(startScreen,A_REVERSE);
 
+    char* instructions[2] = {
+        "Move your ship with the arrow keys",
+        "Press R to pause and R to resume",
+    };
+    for(int i = 0; i < 2; ++i)
+        mvwprintw(startScreen,3 + i,(startWidth-strlen(instructions[i]))/2,instructions[i]);
+
+    char* pressEnter = "Press enter to continue...";
+    mvwprintw(startScreen,12,(startWidth-strlen(pressEnter))/2,pressEnter);
+    // TODO: add snazzy art
     wrefresh(startScreen);
-    getch();
+
+    int choice;
+    do{
+        choice = getch();
+    } while(choice != K_ENTER);
+
+    delwin(startScreen);
+    endwin();
 }
 
-void* setupGameWin(int yMax, int xMax){
+GameWindow* setupGameWin(int yMax, int xMax){
     float relSize = 1.5; // ~1/3 of terminal should be border
     int boundY = (int)(yMax/relSize);
     int boundX = (int)(xMax/relSize);
@@ -98,7 +118,8 @@ void* setupGameWin(int yMax, int xMax){
     GameWindow *gameWin = calloc(1,sizeof(GameWindow));
     if(!gameWin){
         fprintf(stderr,"Allocation of start screen failed!");
-        return FAILURE;
+        endwin();
+        exit(EXIT_FAILURE);
     }
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
@@ -106,7 +127,7 @@ void* setupGameWin(int yMax, int xMax){
     box(gameWin->W,0,0);
     wrefresh(gameWin->W);
 
-    return (void*)gameWin;
+    return gameWin;
 }
 
 int main(){
@@ -119,11 +140,13 @@ int main(){
     getmaxyx(stdscr,yMax,xMax);
 
     runStartScreen(startHeight=20,startWidth=80,yMax,xMax);
-    GameWindow* gameWindow = (GameWindow*)setupGameWin(yMax,xMax);
+    GameWindow* gameWin = setupGameWin(yMax,xMax);
+    addPlayer(gameWin);
+    addEnemies(gameWin);
+    runGame(gameWin);
 
-
+    delwin(gameWin->W);
     getch();
-
     endwin();
 
     return EXIT_SUCCESS;
