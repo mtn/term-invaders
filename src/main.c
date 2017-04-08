@@ -108,7 +108,7 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
     endwin();
 }
 
-GameWindow* setupGameWin(int yMax, int xMax){
+GameWindow* setupGame(int yMax, int xMax){
     float relSize = 1.5; // ~1/3 of terminal should be border
     int boundY = (int)(yMax/relSize);
     int boundX = (int)(xMax/relSize);
@@ -127,6 +127,8 @@ GameWindow* setupGameWin(int yMax, int xMax){
     box(gameWin->W,0,0);
     wrefresh(gameWin->W);
 
+    halfdelay(1); // The game proceeds in the absence of input after 1/10 sec
+
     return gameWin;
 }
 
@@ -144,7 +146,7 @@ int main(){
     getmaxyx(stdscr,yMax,xMax);
 
     runStartScreen(startHeight=20,startWidth=80,yMax,xMax);
-    GameWindow* gameWin = setupGameWin(yMax,xMax);
+    GameWindow* gameWin = setupGame(yMax,xMax);
     addPlayer(gameWin);
     /* addEnemies(gameWin); */
     runGame(gameWin);

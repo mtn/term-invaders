@@ -17,6 +17,18 @@ void addPlayer(GameWindow* gameWin){
     gameWin->P = P;
 }
 
+void moveLeft(GameWindow* GW){
+    --((Player*)GW->P)->loc->x;
+}
+
+void moveRight(GameWindow* GW){
+    ++((Player*)GW->P)->loc->x;
+}
+
+void shootProjectile(GameWindow* GW){
+    // TODO
+}
+
 void renderPlayer(GameWindow* gameWin){
     Player* P = (Player*)gameWin->P;
     wmvaddch(gameWin->W,P->loc->y,P->loc->x,'^');
