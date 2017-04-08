@@ -130,6 +130,10 @@ GameWindow* setupGameWin(int yMax, int xMax){
     return gameWin;
 }
 
+void runGame(GameWindow* gameWin){
+    renderPlayer(gameWin);
+}
+
 int main(){
     initscr();
     noecho();
@@ -142,7 +146,7 @@ int main(){
     runStartScreen(startHeight=20,startWidth=80,yMax,xMax);
     GameWindow* gameWin = setupGameWin(yMax,xMax);
     addPlayer(gameWin);
-    addEnemies(gameWin);
+    /* addEnemies(gameWin); */
     runGame(gameWin);
 
     delwin(gameWin->W);

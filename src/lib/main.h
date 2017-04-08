@@ -16,9 +16,9 @@ typedef struct {
 
 typedef struct {
     Window* W;
-    Player* P;
-    Enemy* E[MAX_ENEMIES];
-    // player position?? projectile position?
+    void* P; // Player
+    void* E[MAX_ENEMIES];
+    // projectiles? Could be very similar to enemies given lim
 } GameWindow;
 
 bool wmvaddch(Window* W, int y, int x, int ch);
@@ -26,6 +26,7 @@ int toOneD(int y, int x, int maxX);
 bool isOccupied(GameWindow* GW, int y, int x, int xMax);
 void freeGW(GameWindow* GW);
 int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOptions, char** options); // returns selected index
+void runGame(GameWindow* GW);
 
 #endif /* MAIN_H */
 

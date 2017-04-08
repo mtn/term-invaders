@@ -9,13 +9,14 @@
 
 typedef struct {
     int health;
-    Coord C;
+    Coord* loc;
 } Player;
 
 void addPlayer(GameWindow* GW);
 void moveLeft(GameWindow* GW);
 void moveRight(GameWindow* GW);
 void shootProjectile(GameWindow* GW);
+void renderPlayer(GameWindow* GW);
 
 #endif /* PLAYER_H */
 
