@@ -23,11 +23,53 @@ void initializeEnemies(GameWindow* GW){
     GW->E = (void**)enemies;
 }
 
+// The enemies are essentially placed in a grid system
+// This function computes location from index for all enemies
+Coord* positionFromInd(int ind){
+    Coord *position = malloc(sizeof(Coord));
+    position->y = (4*ind/11) + 2;
+    position->x = (ind % 11) * 14;
+    return position;
+}
+
+void renderNear(GameWindow* GW, int ind){
+    Coord *c = positionFromInd(ind);
+
+    mvwaddstr(GW->W,c->y + 0, c->x, " ▄▄▄████▄▄▄ ");
+    mvwaddstr(GW->W,c->y + 1, c->x, "███▀▀██▀▀███");
+    mvwaddstr(GW->W,c->y + 2, c->x, "▀▀███▀▀███▀▀");
+    mvwaddstr(GW->W,c->y + 3, c->x, " ▀█▄ ▀▀ ▄█▀ ");
+
+    free(c);
+}
+
+void renderMedium(GameWindow* GW, int ind){
+    Coord *c = positionFromInd(ind);
+
+    mvwaddstr(GW->W,c->y + 0, c->x, "   ▀▄   ▄▀  ");
+    mvwaddstr(GW->W,c->y + 1, c->x, "  ▄█▀███▀█▄ ");
+    mvwaddstr(GW->W,c->y + 2, c->x, " █▀███████▀█");
+    mvwaddstr(GW->W,c->y + 3, c->x, " ▀ ▀▄▄ ▄▄▀ ▀");
+
+    free(c);
+}
+
+void renderFar(GameWindow* GW, int ind){
+    Coord *c = positionFromInd(ind);
+
+    mvwaddstr(GW->W,c->y + 0, c->x, "    ▄██▄    ");
+    mvwaddstr(GW->W,c->y + 1, c->x, "  ▄█▀██▀█▄  ");
+    mvwaddstr(GW->W,c->y + 2, c->x, "  ▀▀█▀▀█▀▀  ");
+    mvwaddstr(GW->W,c->y + 3, c->x, "  ▄▀▄▀▀▄▀▄  ");
+
+    free(c);
+}
+
 void renderEnemies(GameWindow* GW){
     for(int i = 0; i < 55; ++i){
-        if(((Enemy**)GW->E)[i]->isAlive){
-            wmvaddch(GW->W,((Enemy**)GW->E)[i]->loc->y,((Enemy**)GW->E)[i]->loc->x,'@');
-        }
+        if(i <= 11) renderFar(GW,i);
+        else if(i <= 33) renderMedium(GW,i);
+        else renderNear(GW,i);
     }
 }
 

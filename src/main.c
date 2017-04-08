@@ -1,6 +1,6 @@
 #define K_ENTER       10 // KEY_ENTER is defined to something else by ncurses
-#define MIN_WIDTH    120
-#define MIN_HEIGHT    30
+#define MIN_WIDTH    140
+#define MIN_HEIGHT    40
 
 #include <ncurses.h>
 #include <stdlib.h>
@@ -23,9 +23,8 @@ bool wmvaddch(Window* W, int y, int x, int ch){
     return true;
 }
 
-int toOneD(int y, int x, int maxX){ return y*maxX + x; }
-
 void freeGW(GameWindow* GW){
+    // TODO
     delwin(GW->W);
     free(GW);
 }
@@ -112,7 +111,7 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
 }
 
 GameWindow* setupGame(int yMax, int xMax){
-    float relSize = 1.2; // 5/6 of terminal should be border
+    float relSize = 1.1; // 5/6 of terminal should be border
     int boundY = (int)(yMax/relSize);
     int boundX = (int)(xMax/relSize);
     int borderTB = (yMax-boundY)/2;

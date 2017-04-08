@@ -21,6 +21,9 @@ void initializeEnemies(GameWindow* GW);
 void shiftLeft(GameWindow* GW);
 void shiftRight(GameWindow* GW);
 void renderEnemies(GameWindow* GW);
+void renderNear(GameWindow* GW, int ind);
+void renderMedium(GameWindow* GW, int ind);
+void renderFar(GameWindow* GW, int ind);
 
 #endif /* ENEMY_H */
 
