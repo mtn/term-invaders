@@ -1,4 +1,5 @@
 #define MAX_HEALTH 100
+#define PLAYER_WIDTH  12
 
 #include <stdlib.h>
 
@@ -16,16 +17,40 @@ void initializePlayer(GameWindow* gameWin){
     gameWin->P = P;
 }
 
-void moveLeft(GameWindow* GW){
-    --((Player*)GW->P)->loc->x;
+void movePlayerLeft(GameWindow* GW){
+    if(((Player*)GW->P)->loc->x > 1){
+        clearPlayer(GW);
+        --((Player*)GW->P)->loc->x;
+    }
+    wrefresh(GW->W);
 }
 
-void moveRight(GameWindow* GW){
-    ++((Player*)GW->P)->loc->x;
+void movePlayerRight(GameWindow* GW){
+    if(((Player*)GW->P)->loc->x < (GW->boundX - PLAYER_WIDTH)){
+        clearPlayer(GW);
+        ++((Player*)GW->P)->loc->x;
+    }
+    wrefresh(GW->W);
 }
 
 void shootProjectile(GameWindow* GW){
     // TODO
+}
+
+// Clears the currently rendered player
+void clearPlayer(GameWindow* GW){
+    int locx = ((Player*)GW->P)->loc->x;
+    int locy = ((Player*)GW->P)->loc->y;
+
+    wmove(GW->W,locy-3, 0);
+    wclrtoeol(GW->W);
+    wmove(GW->W,locy-2, 0);
+    wclrtoeol(GW->W);
+    wmove(GW->W,locy-1, 0);
+    wclrtoeol(GW->W);
+
+    // Box gets ruined
+    box(GW->W,0,0);
 }
 
 void renderPlayer(GameWindow* gameWin){
@@ -34,7 +59,6 @@ void renderPlayer(GameWindow* gameWin){
     mvwaddstr(gameWin->W,((Player*)gameWin->P)->loc->y-2, ((Player*)gameWin->P)->loc->x, "▄█████████▄");
     mvwaddstr(gameWin->W,((Player*)gameWin->P)->loc->y-1, ((Player*)gameWin->P)->loc->x, "▀▀▀▀▀▀▀▀▀▀▀");
     attroff(COLOR_PAIR(1));
-    /* wmvaddch(gameWin->W,P->loc->y,P->loc->x,'^'); */
     wrefresh(gameWin->W);
 }
 

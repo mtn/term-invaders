@@ -133,6 +133,8 @@ GameWindow* setupGame(int yMax, int xMax){
         endwin();
         exit(EXIT_FAILURE);
     }
+    gameWin->boundX = boundX;
+    gameWin->boundY = boundY;
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
     refresh();
@@ -148,25 +150,44 @@ void runGame(GameWindow* gameWin){
     initializePlayer(gameWin);
     initializeEnemies(gameWin);
 
-    renderPlayer(gameWin);
-    renderEnemies(gameWin);
-    wrefresh(gameWin->W);
+    int choice;
+    while(((Player*)gameWin->P)->health > 0){
+        renderPlayer(gameWin);
+        renderEnemies(gameWin);
+
+        choice = getch();
+        switch(choice){
+            case KEY_LEFT:
+                movePlayerLeft(gameWin);
+                break;
+            case KEY_RIGHT:
+                movePlayerRight(gameWin);
+                break;
+        }
+
+        wrefresh(gameWin->W);
+    }
+
     cbreak();
     getch();
 }
 
-int main(){
+void initCurses(){
     setlocale(LC_ALL, "");
     initscr();
     noecho();
     curs_set(0);
     cbreak();
+    keypad(stdscr,TRUE);
 
     start_color();
     init_pair(1, COLOR_GREEN, COLOR_BLACK);
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+}
 
+int main(){
     int yMax, xMax, renderStatus, startHeight, startWidth;
+    initCurses();
     getmaxyx(stdscr,yMax,xMax);
 
     runStartScreen(startHeight=20,startWidth=80,yMax,xMax);

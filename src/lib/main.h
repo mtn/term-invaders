@@ -16,8 +16,10 @@ typedef struct {
 
 typedef struct {
     Window* W;
-    void* P; // Player
+    void* P;    // Player
     void** E;
+    int boundX; // For convenience
+    int boundY;
     // projectiles? Could be very similar to enemies given lim
 } GameWindow;
 

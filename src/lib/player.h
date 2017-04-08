@@ -13,9 +13,10 @@ typedef struct {
 } Player;
 
 void initializePlayer(GameWindow* GW);
-void moveLeft(GameWindow* GW);
-void moveRight(GameWindow* GW);
+void movePlayerLeft(GameWindow* GW);
+void movePlayerRight(GameWindow* GW);
 void shootProjectile(GameWindow* GW);
+void clearPlayer(GameWindow* GW);
 void renderPlayer(GameWindow* GW);
 
 #endif /* PLAYER_H */
