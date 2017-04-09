@@ -1,3 +1,5 @@
+#define ENEMY_WIDTH 12
+
 #include <stdlib.h>
 
 #include "lib/main.h"
@@ -14,26 +16,25 @@ void initializeEnemies(GameWindow* GW){
         else if(i <= 33) e->type = MEDIUM;
         else e->type = NEAR;
 
-        Coord *C = calloc(1,sizeof(Coord));
-        C->x = (i%11) << 1;
-        C->y = (i/11) + 3;
-        e->loc = C;
         enemies[i] = e;
     }
     GW->E = (void**)enemies;
+    GW->enemyVertLoc = GW->enemyHorizLoc = 0;
+    GW->enemyHorizBound = GW->boundX;
+    GW->enemyVertBound = GW->boundY - 15;
 }
 
 // The enemies are essentially placed in a grid system
-// This function computes location from index for all enemies
-Coord* positionFromInd(int ind){
+// This function computes position based on loc and relation to other enemies
+Coord* positionFromInd(GameWindow* GW,int ind){
     Coord *position = malloc(sizeof(Coord));
-    position->y = (4*ind/11) + 2;
-    position->x = (ind % 11) * 14;
+    position->y = 2 + 5*(ind/11) + GW->enemyVertLoc;
+    position->x = 2 + (ind % 11) * 14 + GW->enemyHorizLoc;
     return position;
 }
 
 void renderNear(GameWindow* GW, int ind){
-    Coord *c = positionFromInd(ind);
+    Coord *c = positionFromInd(GW,ind);
 
     mvwaddstr(GW->W,c->y + 0, c->x, " ▄▄▄████▄▄▄ ");
     mvwaddstr(GW->W,c->y + 1, c->x, "███▀▀██▀▀███");
@@ -44,7 +45,7 @@ void renderNear(GameWindow* GW, int ind){
 }
 
 void renderMedium(GameWindow* GW, int ind){
-    Coord *c = positionFromInd(ind);
+    Coord *c = positionFromInd(GW,ind);
 
     mvwaddstr(GW->W,c->y + 0, c->x, "   ▀▄   ▄▀  ");
     mvwaddstr(GW->W,c->y + 1, c->x, "  ▄█▀███▀█▄ ");
@@ -55,7 +56,7 @@ void renderMedium(GameWindow* GW, int ind){
 }
 
 void renderFar(GameWindow* GW, int ind){
-    Coord *c = positionFromInd(ind);
+    Coord *c = positionFromInd(GW,ind);
 
     mvwaddstr(GW->W,c->y + 0, c->x, "    ▄██▄    ");
     mvwaddstr(GW->W,c->y + 1, c->x, "  ▄█▀██▀█▄  ");
@@ -71,13 +72,42 @@ void renderEnemies(GameWindow* GW){
         else if(i <= 33) renderMedium(GW,i);
         else renderNear(GW,i);
     }
+    wrefresh(GW->W);
 }
 
-void shiftLeft(GameWindow* GW){
+void clearEnemies(GameWindow* GW){
+    int locx, locy;
+    Coord *c;
+    // Clear each of the 5 rows
+    for(int i = 0; i < 55; i+=11){
+        c = positionFromInd(GW,i);
+        locy = c->y;
 
+        wmove(GW->W,locy, 0);
+        wclrtoeol(GW->W);
+        wmove(GW->W,locy+1, 0);
+        wclrtoeol(GW->W);
+        wmove(GW->W,locy+2, 0);
+        wclrtoeol(GW->W);
+
+
+        free(c);
+    }
+    // Box gets ruined
+    box(GW->W,0,0);
+    wrefresh(GW->W);
 }
 
-void shiftRight(GameWindow* GW){
+// The core enemies (except unimplemented UFO) move as a block
+void shiftEnemiesLeft(GameWindow* GW){
+    clearEnemies(GW);
+    if(GW->enemyHorizLoc > 0)
+        --GW->enemyHorizLoc;
+}
 
+void shiftEnemiesRight(GameWindow* GW){
+    clearEnemies(GW);
+    if(GW->enemyVertLoc < GW->enemyHorizBound)
+        ++GW->enemyHorizLoc;
 }
 

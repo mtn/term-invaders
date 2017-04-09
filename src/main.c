@@ -111,7 +111,7 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
 }
 
 GameWindow* setupGame(int yMax, int xMax){
-    float relSize = 1.1; // 5/6 of terminal should be border
+    float relSize = 1.1; // ~90% of terminal should be border
     int boundY = (int)(yMax/relSize);
     int boundX = (int)(xMax/relSize);
     int borderTB = (yMax-boundY)/2;
@@ -163,6 +163,8 @@ void runGame(GameWindow* gameWin){
                 movePlayerRight(gameWin);
                 break;
         }
+        shiftEnemiesRight(gameWin);;
+        renderEnemies(gameWin);
 
         wrefresh(gameWin->W);
     }

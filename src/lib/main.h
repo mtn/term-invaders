@@ -16,9 +16,15 @@ typedef struct {
 
 typedef struct {
     Window* W;
-    void* P;    // Player
+    void* P;             // Player
     void** E;
-    int boundX; // For convenience
+
+    int enemyVertLoc;    // Enemies don't have individual locations
+    int enemyHorizLoc;   // From the left edge
+    int enemyHorizBound;
+    int enemyVertBound;
+
+    int boundX;          // For convenience
     int boundY;
     // projectiles? Could be very similar to enemies given lim
 } GameWindow;

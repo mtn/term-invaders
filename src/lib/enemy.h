@@ -11,19 +11,21 @@
 // For now the UFO isn't actually implemented
 typedef enum {NEAR, MEDIUM, FAR, UFO} EnemyType;
 
+// Enemies don't require individual positions
 typedef struct {
     bool isAlive;
     EnemyType type;
-    Coord *loc;
 } Enemy;
 
 void initializeEnemies(GameWindow* GW);
-void shiftLeft(GameWindow* GW);
-void shiftRight(GameWindow* GW);
+void shiftEnemiesLeft(GameWindow* GW);
+void shiftEnemiesRight(GameWindow* GW);
+void clearEnemies(GameWindow* GW);
 void renderEnemies(GameWindow* GW);
 void renderNear(GameWindow* GW, int ind);
 void renderMedium(GameWindow* GW, int ind);
 void renderFar(GameWindow* GW, int ind);
+Coord* positionFromInd(GameWindow* GW,int ind);
 
 #endif /* ENEMY_H */
 
