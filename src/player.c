@@ -18,9 +18,9 @@ void initializePlayer(GameWindow* gameWin){
 }
 
 void movePlayerLeft(GameWindow* GW){
-    if(((Player*)GW->P)->loc->x > 1){
+    if(GW->P->loc->x > 1){
         clearPlayer(GW);
-        --((Player*)GW->P)->loc->x;
+        --GW->P->loc->x;
     }
     wrefresh(GW->W);
 }
@@ -28,7 +28,7 @@ void movePlayerLeft(GameWindow* GW){
 void movePlayerRight(GameWindow* GW){
     if(((Player*)GW->P)->loc->x < (GW->boundX - PLAYER_WIDTH)){
         clearPlayer(GW);
-        ++((Player*)GW->P)->loc->x;
+        ++GW->P->loc->x;
     }
     wrefresh(GW->W);
 }
@@ -39,8 +39,8 @@ void shootProjectile(GameWindow* GW){
 
 // Clears the currently rendered player
 void clearPlayer(GameWindow* GW){
-    int locx = ((Player*)GW->P)->loc->x;
-    int locy = ((Player*)GW->P)->loc->y;
+    int locx = GW->P->loc->x;
+    int locy = GW->P->loc->y;
 
     wmove(GW->W,locy-3, 0);
     wclrtoeol(GW->W);
@@ -55,9 +55,9 @@ void clearPlayer(GameWindow* GW){
 
 void renderPlayer(GameWindow* gameWin){
     attron(COLOR_PAIR(1));
-    mvwaddstr(gameWin->W,((Player*)gameWin->P)->loc->y-3, ((Player*)gameWin->P)->loc->x, "    ▄█▄    ");
-    mvwaddstr(gameWin->W,((Player*)gameWin->P)->loc->y-2, ((Player*)gameWin->P)->loc->x, "▄█████████▄");
-    mvwaddstr(gameWin->W,((Player*)gameWin->P)->loc->y-1, ((Player*)gameWin->P)->loc->x, "▀▀▀▀▀▀▀▀▀▀▀");
+    mvwaddstr(gameWin->W,gameWin->P->loc->y-3, gameWin->P->loc->x, "    ▄█▄    ");
+    mvwaddstr(gameWin->W,gameWin->P->loc->y-2, gameWin->P->loc->x, "▄█████████▄");
+    mvwaddstr(gameWin->W,gameWin->P->loc->y-1, gameWin->P->loc->x, "▀▀▀▀▀▀▀▀▀▀▀");
     attroff(COLOR_PAIR(1));
     wrefresh(gameWin->W);
 }

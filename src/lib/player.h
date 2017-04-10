@@ -7,10 +7,10 @@
 #include "main.h"
 
 
-typedef struct {
+struct Player {
     int health;
     Coord* loc;
-} Player;
+};
 
 void initializePlayer(GameWindow* GW);
 void movePlayerLeft(GameWindow* GW);

@@ -1,6 +1,6 @@
 # term-invaders
 
-A terminal implementation of the classic arcade game space invaders built in C with GNU ncurses.
+A terminal implementation of the classic arcade game space invaders built in C with GNU ncurses. Pull requests welcome.
 
 ## Credits
 

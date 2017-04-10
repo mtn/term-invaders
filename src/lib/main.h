@@ -8,6 +8,9 @@
 
 
 typedef WINDOW Window;
+typedef struct Enemy Enemy;
+typedef struct EnemyLL EnemyLL;
+typedef struct Player Player;
 
 typedef struct {
     int x;
@@ -15,14 +18,20 @@ typedef struct {
 } Coord, *CoordPtr;
 
 typedef struct {
-    Window* W;
-    void* P;             // Player
-    void** E;
+    int xDim;
+    int yDim;
+    char** img;
+} Image;
 
-    int enemyVertLoc;    // Enemies don't have individual locations
-    int enemyHorizLoc;   // From the left edge
-    int enemyHorizBound;
-    int enemyVertBound;
+typedef struct {
+    Window* W;
+    Player* P;
+    EnemyLL* ELL;
+
+    Image* player;
+    Image* nearEnemy;
+    Image* midEnemy;
+    Image* farEnemy;
 
     int boundX;          // For convenience
     int boundY;
@@ -33,6 +42,7 @@ bool wmvaddch(Window* W, int y, int x, int ch);
 bool isOccupied(GameWindow* GW, int y, int x, int xMax);
 void freeGW(GameWindow* GW);
 int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOptions, char** options); // returns selected index
+void renderImg(GameWindow* GW, Image* img, int y, int x);
 void runGame(GameWindow* GW);
 
 #endif /* MAIN_H */

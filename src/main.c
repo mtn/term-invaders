@@ -1,6 +1,8 @@
-#define K_ENTER       10 // KEY_ENTER is defined to something else by ncurses
-#define MIN_WIDTH    140
-#define MIN_HEIGHT    40
+#define K_ENTER            10 // KEY_ENTER is defined to something else by ncurses
+#define MIN_TERM_WIDTH    140
+#define MIN_TERM_HEIGHT    40
+#define MAX_X_DIM          12
+#define MAX_Y_DIM           4
 
 #include <ncurses.h>
 #include <stdlib.h>
@@ -118,7 +120,7 @@ GameWindow* setupGame(int yMax, int xMax){
     int borderLR = (xMax-boundX)/2;
 
     // Compare to minimum dimensions, which are based on size of enemies to be displayed
-    if(boundY < MIN_HEIGHT || boundX < MIN_WIDTH){
+    if(boundY < MIN_TERM_HEIGHT || boundX < MIN_TERM_WIDTH){
         clear();
         printw("Terminal size too small! Resize window to play game!");
         getch();
@@ -150,7 +152,7 @@ void runGame(GameWindow* gameWin){
     initializeEnemies(gameWin);
 
     int choice;
-    while(((Player*)gameWin->P)->health > 0){
+    while((gameWin->P)->health > 0){
         renderPlayer(gameWin);
         renderEnemies(gameWin);
 
@@ -184,6 +186,17 @@ void initCurses(){
     start_color();
     init_pair(1, COLOR_GREEN, COLOR_BLACK);
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+}
+
+void loadImages(GameWindow* GW){
+    FILE *fp;
+    int xDim, yDim;
+
+    fp = fopen("../img/player.txt","r");
+    fscanf(fp,"%d,%d",&xDim,&yDim);
+    fp = fopen("../img/farEnemy.txt","r");
+    fp = fopen("../img/midEnemy.txt","r");
+    fp = fopen("../img/nearEnemy.txt","r");
 }
 
 int main(){

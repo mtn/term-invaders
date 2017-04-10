@@ -7,17 +7,20 @@
 #include "main.h"
 
 
-// Enemy type described in terms of distance from player
-// For now the UFO isn't actually implemented
-typedef enum {NEAR, MEDIUM, FAR, UFO} EnemyType;
+struct EnemyLL {
+    Enemy* E;
+    struct EnemyLL* next;
+    struct EnemyLL* prev;
+};
 
 // Enemies don't require individual positions
-typedef struct {
+struct Enemy {
     bool isAlive;
-    EnemyType type;
-} Enemy;
+    Coord* c;
+    Image* img;
+};
 
-void initializeEnemies(GameWindow* GW);
+EnemyLL* initializeEnemies(GameWindow* GW);
 void shiftEnemiesLeft(GameWindow* GW);
 void shiftEnemiesRight(GameWindow* GW);
 void clearEnemies(GameWindow* GW);
