@@ -169,12 +169,14 @@ void runGame(GameWindow* gameWin){
     int choice;
     double secsElapsed, temp;
     clock_t t = clock();
+    renderEnemies(gameWin);
+    renderPlayer(gameWin);
     while((gameWin->P)->health > 0){
-        renderPlayer(gameWin);
-        renderEnemies(gameWin);
         temp = clock() - t;
         secsElapsed = ((double)temp)/CLOCKS_PER_SEC; // seconds
         if(secsElapsed >= 0.5){
+            derenderEnemies(gameWin);
+            renderEnemies(gameWin);
             gameWin->state = !gameWin->state;
             t = clock();
         }
@@ -183,18 +185,17 @@ void runGame(GameWindow* gameWin){
         switch(choice){
             case KEY_LEFT:
                 movePlayerLeft(gameWin);
+                derenderPlayer(gameWin);
+                renderPlayer(gameWin);
                 break;
             case KEY_RIGHT:
                 movePlayerRight(gameWin);
+                derenderPlayer(gameWin);
+                renderPlayer(gameWin);
                 break;
             case ERR:
                 break;
         }
-        derenderPlayer(gameWin);
-        derenderEnemies(gameWin);
-        renderPlayer(gameWin);
-        renderEnemies(gameWin);
-
         wrefresh(gameWin->W);
     }
 
