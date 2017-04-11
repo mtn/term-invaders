@@ -8,6 +8,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "lib/main.h"
 #include "lib/enemy.h"
@@ -110,7 +111,7 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
 }
 
 GameWindow* setupGame(int yMax, int xMax){
-    float relSize = 1.1; // ~90% of terminal should be border
+    float relSize = 1.1; // ~90% of terminal should be occupied
     int boundY = (int)(yMax/relSize);
     int boundX = (int)(xMax/relSize);
     int borderTB = (yMax-boundY)/2;
@@ -133,13 +134,15 @@ GameWindow* setupGame(int yMax, int xMax){
     }
     gameWin->boundX = boundX;
     gameWin->boundY = boundY;
+    gameWin->state = 0;
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
+    nodelay(gameWin->W,TRUE);
     refresh();
     box(gameWin->W,0,0);
     wrefresh(gameWin->W);
 
-    halfdelay(1); // The game proceeds in the absence of input after 1/10 sec
+    /* halfdelay(3); // The game proceeds in the absence of input after 1/10 sec */
 
     return gameWin;
 }
@@ -149,7 +152,6 @@ void renderImg(GameWindow* GW, Image* img, int y, int x){
         int shift = (int)((img->xDim-strlen(img->img[i]))/2); // bad naming
         mvwaddstr(GW->W,y+i,x+shift,img->img[i]);
     }
-    wrefresh(GW->W);
 }
 
 void derenderImg(GameWindow* GW, Image* img, int y, int x){
@@ -158,7 +160,6 @@ void derenderImg(GameWindow* GW, Image* img, int y, int x){
             mvwaddch(GW->W,y+j,x+i,' ');
         }
     }
-    wrefresh(GW->W);
 }
 
 void runGame(GameWindow* gameWin){
@@ -166,11 +167,19 @@ void runGame(GameWindow* gameWin){
     initializeEnemies(gameWin);
 
     int choice;
+    double secsElapsed, temp;
+    clock_t t = clock();
     while((gameWin->P)->health > 0){
         renderPlayer(gameWin);
         renderEnemies(gameWin);
+        temp = clock() - t;
+        secsElapsed = ((double)temp)/CLOCKS_PER_SEC; // seconds
+        if(secsElapsed >= 0.5){
+            gameWin->state = !gameWin->state;
+            t = clock();
+        }
 
-        choice = getch();
+        choice = wgetch(gameWin->W);
         switch(choice){
             case KEY_LEFT:
                 movePlayerLeft(gameWin);
@@ -178,8 +187,13 @@ void runGame(GameWindow* gameWin){
             case KEY_RIGHT:
                 movePlayerRight(gameWin);
                 break;
+            case ERR:
+                break;
         }
-        /* renderEnemies(gameWin); */
+        derenderPlayer(gameWin);
+        derenderEnemies(gameWin);
+        renderPlayer(gameWin);
+        renderEnemies(gameWin);
 
         wrefresh(gameWin->W);
     }

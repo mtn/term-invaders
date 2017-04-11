@@ -22,6 +22,10 @@ void renderPlayer(GameWindow* GW){
     wrefresh(GW->W);
 }
 
+void derenderPlayer(GameWindow* GW){
+    derenderImg(GW,GW->P->img,GW->P->loc->y,GW->P->loc->x);
+    wrefresh(GW->W);
+}
 
 void movePlayerLeft(GameWindow* GW){
     if(GW->P->loc->x > 1){

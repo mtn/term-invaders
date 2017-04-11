@@ -1,11 +1,11 @@
 6,4
-x    x
+x____x
 xxOOxx
  xxxx
- /  \
+ //\\
 
-x    x
+x____x
 xxOOxx
  xxxx
- \  /
+ \\//
 

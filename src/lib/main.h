@@ -40,6 +40,7 @@ typedef struct {
     EnemyLL* ELL;
 
     Images* images;
+    int state;           // 0 or 1 for alternating animations
 
     int boundX;          // For convenience
     int boundY;

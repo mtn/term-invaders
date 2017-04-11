@@ -19,6 +19,7 @@ void movePlayerRight(GameWindow* GW);
 void shootProjectile(GameWindow* GW);
 void clearPlayer(GameWindow* GW);
 void renderPlayer(GameWindow* GW);
+void derenderPlayer(GameWindow* GW);
 
 #endif /* PLAYER_H */
 

@@ -20,11 +20,11 @@ void initializeEnemies(GameWindow* GW){
         loc->y = (i / 11) * 6 + 2;
         E->loc = loc;
 
-        if(i <= 11){
+        if(i < 11){
             E->img1 = GW->images->farEnemy1;
             E->img2 = GW->images->farEnemy2;
         }
-        else if(i <= 33){
+        else if(i < 33){
             E->img1 = GW->images->midEnemy1;
             E->img2 = GW->images->midEnemy2;
         }
@@ -51,10 +51,25 @@ void renderEnemies(GameWindow* GW){
     EnemyLL* e = GW->ELL;
     while(e){
         // TODO better naming lol
-        renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+        if(GW->state)
+            renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+        else
+            renderImg(GW,e->E->img2,e->E->loc->y,e->E->loc->x);
         e = e->next;
     }
-    wrefresh(GW->W);
+}
+
+void derenderEnemies(GameWindow* GW){
+    // TODO add sprite alternation
+    EnemyLL* e = GW->ELL;
+    while(e){
+        // TODO better naming lol
+        if(GW->state)
+            derenderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+        else
+            derenderImg(GW,e->E->img2,e->E->loc->y,e->E->loc->x);
+        e = e->next;
+    }
 }
 
 void moveEnemyLeft(GameWindow* GW, Enemy* E){
