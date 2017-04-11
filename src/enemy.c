@@ -13,7 +13,7 @@ void initializeEnemies(GameWindow* GW){
 
     for(int i = 0; i < 55; ++i){
         Enemy *E = malloc(sizeof(Enemy));
-        E-> isAlive = true;
+        E->isAlive = true;
 
         if(i <= 11){
             E->img1 = GW->images->farEnemy1;
@@ -29,9 +29,11 @@ void initializeEnemies(GameWindow* GW){
         }
 
         enemyLL->E = E;
-        enemyLL->next->prev = enemyLL;
+        EnemyLL* nextLink = malloc(sizeof(EnemyLL));
+        nextLink->prev = enemyLL;
+        nextLink->next = NULL;
+        enemyLL->next = nextLink;
         enemyLL = enemyLL->next;
-        enemyLL->next = NULL;
     }
 
     GW->ELL = first;

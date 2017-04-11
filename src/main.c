@@ -107,7 +107,6 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
     } while(choice != K_ENTER);
 
     delwin(startScreen);
-    endwin();
 }
 
 GameWindow* setupGame(int yMax, int xMax){
@@ -183,6 +182,7 @@ void runGame(GameWindow* gameWin){
     initializeEnemies(gameWin);
 
     int choice;
+    fprintf(stderr,"%d",gameWin->P->health);
     while((gameWin->P)->health > 0){
         renderPlayer(gameWin);
         renderEnemies(gameWin);
@@ -223,54 +223,77 @@ void loadImages(GameWindow* GW){
     Images *images  = malloc(sizeof(Images));
 
     images->player = malloc(sizeof(Image));
-    fp = fopen("../img/player.txt","r");
+    fp = fopen("img/player.txt","r");
     fscanf(fp,"%d,%d",&xDim,&yDim);
-    for(int i = 0; i < yDim; i++)
+    images->player->img = malloc(yDim*sizeof(char*));
+    for(int i = 0; i < yDim; i++){
+        images->player->img[i] = malloc(sizeof(char)*(xDim+1));
         fscanf(fp,"%s",images->player->img[i]);
+    }
     images->player->xDim = xDim;
     images->player->yDim = yDim;
 
 
     images->nearEnemy1 = malloc(sizeof(Image));
     images->nearEnemy2 = malloc(sizeof(Image));
-    fp = fopen("../img/nearEnemy.txt","r");
+    fp = fopen("img/nearEnemy.txt","r");
     fscanf(fp,"%d,%d",&xDim,&yDim);
-    for(int i = 0; i < yDim; i++)
+    images->nearEnemy1->img = malloc(yDim*sizeof(char*));
+    images->nearEnemy2->img = malloc(yDim*sizeof(char*));
+    for(int i = 0; i < yDim; i++){
+        images->nearEnemy1->img[i] = malloc(sizeof(char)*(xDim+1));
         fscanf(fp,"%s",images->nearEnemy1->img[i]);
+    }
     images->nearEnemy1->xDim = xDim;
     images->nearEnemy1->yDim = yDim;
-    for(int i = 0; i < yDim; i++)
+    for(int i = 0; i < yDim; i++){
+        images->nearEnemy2->img[i] = malloc(sizeof(char)*(xDim+1));
         fscanf(fp,"%s",images->nearEnemy2->img[i]);
+    }
     images->nearEnemy2->xDim = xDim;
     images->nearEnemy2->yDim = yDim;
 
 
     images->midEnemy1 = malloc(sizeof(Image));
     images->midEnemy2 = malloc(sizeof(Image));
-    fp = fopen("../img/midEnemy.txt","r");
+    fp = fopen("img/midEnemy.txt","r");
+    images->midEnemy1->img = malloc(yDim*sizeof(char*));
+    images->midEnemy2->img = malloc(yDim*sizeof(char*));
     fscanf(fp,"%d,%d",&xDim,&yDim);
-    for(int i = 0; i < yDim; i++)
+    for(int i = 0; i < yDim; i++){
+        images->midEnemy1->img[i] = malloc(sizeof(char)*(xDim+1));
         fscanf(fp,"%s",images->midEnemy1->img[i]);
+    }
     images->midEnemy1->xDim = xDim;
     images->midEnemy1->yDim = yDim;
-    for(int i = 0; i < yDim; i++)
+    for(int i = 0; i < yDim; i++){
+        images->midEnemy2->img[i] = malloc(sizeof(char)*(xDim+1));
         fscanf(fp,"%s",images->midEnemy2->img[i]);
+    }
     images->midEnemy2->xDim = xDim;
     images->midEnemy2->yDim = yDim;
 
+
     images->farEnemy1 = malloc(sizeof(Image));
     images->farEnemy2 = malloc(sizeof(Image));
-    fp = fopen("../img/farEnemy.txt","r");
+    fp = fopen("img/farEnemy.txt","r");
+    images->farEnemy1->img = malloc(yDim*sizeof(char*));
+    images->farEnemy2->img = malloc(yDim*sizeof(char*));
     fscanf(fp,"%d,%d",&xDim,&yDim);
-    for(int i = 0; i < yDim; i++)
+    for(int i = 0; i < yDim; i++){
+        images->farEnemy1->img[i] = malloc(sizeof(char)*(xDim+1));
         fscanf(fp,"%s",images->farEnemy1->img[i]);
+    }
     images->farEnemy1->xDim = xDim;
     images->farEnemy1->yDim = yDim;
-    for(int i = 0; i < yDim; i++)
+    for(int i = 0; i < yDim; i++){
+        images->farEnemy2->img[i] = malloc(sizeof(char)*(xDim+1));
         fscanf(fp,"%s",images->farEnemy2->img[i]);
+    }
     images->farEnemy2->xDim = xDim;
     images->farEnemy2->yDim = yDim;
 
+    fclose(fp);
     GW->images = images;
 }
 
@@ -281,6 +304,7 @@ int main(){
 
     runStartScreen(startHeight=20,startWidth=80,yMax,xMax);
     GameWindow* gameWin = setupGame(yMax,xMax);
+    loadImages(gameWin);
     runGame(gameWin);
     cbreak();
 
