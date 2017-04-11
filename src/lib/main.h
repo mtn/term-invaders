@@ -24,14 +24,22 @@ typedef struct {
 } Image;
 
 typedef struct {
+    Image* player;
+    Image* nearEnemy1;
+    Image* nearEnemy2;
+    Image* midEnemy1;
+    Image* midEnemy2;
+    Image* farEnemy1;
+    Image* farEnemy2;
+    Image* barricade;
+} Images;
+
+typedef struct {
     Window* W;
     Player* P;
     EnemyLL* ELL;
 
-    Image* player;
-    Image* nearEnemy;
-    Image* midEnemy;
-    Image* farEnemy;
+    Images* images;
 
     int boundX;          // For convenience
     int boundY;

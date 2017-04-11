@@ -3,13 +3,11 @@
 #define MIN_TERM_HEIGHT    40
 #define MAX_X_DIM          12
 #define MAX_Y_DIM           4
+#define NUM_IMAGES          9
 
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <unistd.h>
-#include <locale.h>
 
 #include "lib/main.h"
 #include "lib/enemy.h"
@@ -176,7 +174,6 @@ void runGame(GameWindow* gameWin){
 }
 
 void initCurses(){
-    setlocale(LC_ALL, "");
     initscr();
     noecho();
     curs_set(0);
@@ -191,12 +188,57 @@ void initCurses(){
 void loadImages(GameWindow* GW){
     FILE *fp;
     int xDim, yDim;
+    Images *images  = malloc(sizeof(Images));
 
+    images->player = malloc(sizeof(Image));
     fp = fopen("../img/player.txt","r");
     fscanf(fp,"%d,%d",&xDim,&yDim);
-    fp = fopen("../img/farEnemy.txt","r");
-    fp = fopen("../img/midEnemy.txt","r");
+    for(int i = 0; i < yDim; i++)
+        fscanf(fp,"%s",images->player->img[i]);
+    images->player->xDim = xDim;
+    images->player->yDim = yDim;
+
+
+    images->nearEnemy1 = malloc(sizeof(Image));
+    images->nearEnemy2 = malloc(sizeof(Image));
     fp = fopen("../img/nearEnemy.txt","r");
+    fscanf(fp,"%d,%d",&xDim,&yDim);
+    for(int i = 0; i < yDim; i++)
+        fscanf(fp,"%s",images->nearEnemy1->img[i]);
+    images->nearEnemy1->xDim = xDim;
+    images->nearEnemy1->yDim = yDim;
+    for(int i = 0; i < yDim; i++)
+        fscanf(fp,"%s",images->nearEnemy2->img[i]);
+    images->nearEnemy2->xDim = xDim;
+    images->nearEnemy2->yDim = yDim;
+
+
+    images->midEnemy1 = malloc(sizeof(Image));
+    images->midEnemy2 = malloc(sizeof(Image));
+    fp = fopen("../img/midEnemy.txt","r");
+    fscanf(fp,"%d,%d",&xDim,&yDim);
+    for(int i = 0; i < yDim; i++)
+        fscanf(fp,"%s",images->midEnemy1->img[i]);
+    images->midEnemy1->xDim = xDim;
+    images->midEnemy1->yDim = yDim;
+    for(int i = 0; i < yDim; i++)
+        fscanf(fp,"%s",images->midEnemy2->img[i]);
+    images->midEnemy2->xDim = xDim;
+    images->midEnemy2->yDim = yDim;
+
+    images->farEnemy1 = malloc(sizeof(Image));
+    images->farEnemy2 = malloc(sizeof(Image));
+    fp = fopen("../img/farEnemy.txt","r");
+    fscanf(fp,"%d,%d",&xDim,&yDim);
+    for(int i = 0; i < yDim; i++)
+        fscanf(fp,"%s",images->farEnemy1->img[i]);
+    images->farEnemy1->xDim = xDim;
+    images->farEnemy1->yDim = yDim;
+    for(int i = 0; i < yDim; i++)
+        fscanf(fp,"%s",images->farEnemy2->img[i]);
+    images->farEnemy2->xDim = xDim;
+    images->farEnemy2->yDim = yDim;
+
 }
 
 int main(){
