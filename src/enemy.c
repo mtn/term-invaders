@@ -34,11 +34,13 @@ void initializeEnemies(GameWindow* GW){
         }
 
         enemyLL->E = E;
-        EnemyLL* nextLink = malloc(sizeof(EnemyLL));
-        nextLink->prev = enemyLL;
-        nextLink->next = NULL;
-        enemyLL->next = nextLink;
-        enemyLL = enemyLL->next;
+        if(i != 54){
+            EnemyLL* nextLink = malloc(sizeof(EnemyLL));
+            nextLink->next = NULL;
+            nextLink->prev = enemyLL;
+            enemyLL->next = nextLink;
+            enemyLL = enemyLL->next;
+        }
     }
 
     GW->ELL = first;
@@ -50,7 +52,6 @@ void renderEnemies(GameWindow* GW){
     while(e){
         // TODO better naming lol
         renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
-        /* exit(1); */
         e = e->next;
     }
     wrefresh(GW->W);

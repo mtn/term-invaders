@@ -169,7 +169,6 @@ void runGame(GameWindow* gameWin){
     while((gameWin->P)->health > 0){
         renderPlayer(gameWin);
         renderEnemies(gameWin);
-        /* exit(1); */
 
         choice = getch();
         switch(choice){
