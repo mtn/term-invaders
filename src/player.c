@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "lib/player.h"
+#include "lib/main.h"
 
 void initializePlayer(GameWindow* GW){
     Player *P = malloc(sizeof(Player));
@@ -15,6 +16,12 @@ void initializePlayer(GameWindow* GW){
 
     GW->P = P;
 }
+
+void renderPlayer(GameWindow* GW){
+    renderImg(GW,GW->P->img,GW->P->loc->y,GW->P->loc->x);
+    wrefresh(GW->W);
+}
+
 
 void movePlayerLeft(GameWindow* GW){
     if(GW->P->loc->x > 1){

@@ -24,6 +24,7 @@ struct Enemy {
 void initializeEnemies(GameWindow* GW);
 void moveEnemyLeft(GameWindow* GW, Enemy* E);
 void moveEnemyRight(GameWindow* GW, Enemy* E);
+void renderEnemies(GameWindow* GW);
 void clearEnemies(GameWindow* GW);
 Coord* positionFromInd(GameWindow* GW,int ind);
 

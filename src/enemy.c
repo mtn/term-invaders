@@ -13,7 +13,12 @@ void initializeEnemies(GameWindow* GW){
 
     for(int i = 0; i < 55; ++i){
         Enemy *E = malloc(sizeof(Enemy));
+        Coord *loc = malloc(sizeof(Coord));
+
         E->isAlive = true;
+        loc->x = (i % 11) * 15 + 2;
+        loc->y = (i / 11) * 6 + 2;
+        E->loc = loc;
 
         if(i <= 11){
             E->img1 = GW->images->farEnemy1;
@@ -37,6 +42,18 @@ void initializeEnemies(GameWindow* GW){
     }
 
     GW->ELL = first;
+}
+
+void renderEnemies(GameWindow* GW){
+    // TODO add sprite alternation
+    EnemyLL* e = GW->ELL;
+    while(e){
+        // TODO better naming lol
+        renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+        /* exit(1); */
+        e = e->next;
+    }
+    wrefresh(GW->W);
 }
 
 void moveEnemyLeft(GameWindow* GW, Enemy* E){
