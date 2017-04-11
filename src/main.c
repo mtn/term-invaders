@@ -145,6 +145,39 @@ GameWindow* setupGame(int yMax, int xMax){
     return gameWin;
 }
 
+void renderEnemies(GameWindow* GW){
+    // TODO add sprite alternation
+    EnemyLL* e = GW->ELL;
+    while(e){
+        // TODO better naming lol
+        renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+        e = e->next;
+    }
+    wrefresh(GW->W);
+}
+
+void renderPlayer(GameWindow* GW){
+    renderImg(GW,GW->P->img,GW->P->loc->y,GW->P->loc->x);
+    wrefresh(GW->W);
+}
+
+void renderImg(GameWindow* GW, Image* img, int y, int x){
+    for(int i = 0; i < img->yDim; i++){
+        int shift = (int)((img->xDim-strlen(img->img[i]))/2); // bad naming
+        mvwaddstr(GW->W,y+i,x+shift,img->img[i]);
+    }
+    wrefresh(GW->W);
+}
+
+void derenderImg(GameWindow* GW, Image* img, int y, int x){
+    for(int i = 0; i < img->xDim; i++){
+        for(int j = 0; j < img->yDim; j++){
+            mvwaddch(GW->W,y+j,x+i,' ');
+        }
+    }
+    wrefresh(GW->W);
+}
+
 void runGame(GameWindow* gameWin){
     initializePlayer(gameWin);
     initializeEnemies(gameWin);
@@ -163,7 +196,6 @@ void runGame(GameWindow* gameWin){
                 movePlayerRight(gameWin);
                 break;
         }
-        shiftEnemiesRight(gameWin);;
         renderEnemies(gameWin);
 
         wrefresh(gameWin->W);
@@ -239,6 +271,7 @@ void loadImages(GameWindow* GW){
     images->farEnemy2->xDim = xDim;
     images->farEnemy2->yDim = yDim;
 
+    GW->images = images;
 }
 
 int main(){

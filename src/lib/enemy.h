@@ -16,18 +16,15 @@ struct EnemyLL {
 // Enemies don't require individual positions
 struct Enemy {
     bool isAlive;
-    Coord* c;
-    Image* img;
+    Coord* loc;
+    Image* img1;
+    Image* img2;
 };
 
-EnemyLL* initializeEnemies(GameWindow* GW);
-void shiftEnemiesLeft(GameWindow* GW);
-void shiftEnemiesRight(GameWindow* GW);
+void initializeEnemies(GameWindow* GW);
+void moveEnemyLeft(GameWindow* GW, Enemy* E);
+void moveEnemyRight(GameWindow* GW, Enemy* E);
 void clearEnemies(GameWindow* GW);
-void renderEnemies(GameWindow* GW);
-void renderNear(GameWindow* GW, int ind);
-void renderMedium(GameWindow* GW, int ind);
-void renderFar(GameWindow* GW, int ind);
 Coord* positionFromInd(GameWindow* GW,int ind);
 
 #endif /* ENEMY_H */

@@ -10,6 +10,7 @@
 struct Player {
     int health;
     Coord* loc;
+    Image* img;
 };
 
 void initializePlayer(GameWindow* GW);
