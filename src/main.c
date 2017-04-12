@@ -139,9 +139,7 @@ GameWindow* setupGame(int yMax, int xMax){
     gameWin->boundY = boundY;
     gameWin->state = 0;
     gameWin->shiftDir = LEFT;
-    gameWin->numShifts = 0;
-    gameWin->colCount = malloc(7*sizeof(int));
-    for(int i = 0; i < NUM_COLS; i++) gameWin->colCount[i] = NUM_ROWS;
+    gameWin->shiftCount = 0;
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
     nodelay(gameWin->W,TRUE);
@@ -178,8 +176,8 @@ void runGame(GameWindow* gameWin){
         temp = clock() - t;
         secsElapsed = ((double)temp)/CLOCKS_PER_SEC; // seconds
         if(secsElapsed >= 0.5){
-            if(shiftDir == LEFT)
-
+            if(gameWin->shiftDir == LEFT) moveEnemyBlockLeft(gameWin);
+            else moveEnemyBlockRight(gameWin);
             renderEnemies(gameWin);
             gameWin->state = !gameWin->state;
             t = clock();

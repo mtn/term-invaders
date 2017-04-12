@@ -15,7 +15,6 @@ struct EnemyLL {
 
 // Enemies don't require individual positions
 struct Enemy {
-    bool isAlive;
     Coord* loc;
     Image* img1;
     Image* img2;
@@ -25,7 +24,10 @@ void initializeEnemies(GameWindow* GW);
 void moveEnemyBlockLeft(GameWindow* GW);
 void moveEnemyBlockRight(GameWindow* GW);
 void renderEnemies(GameWindow* GW);
+void checkLeftBound(GameWindow* GW);
+void checkRightBound(GameWindow* GW);
 void derenderEnemies(GameWindow* GW);
+int getBlockWidth(int lInd, int rInd);
 
 #endif /* ENEMY_H */
 

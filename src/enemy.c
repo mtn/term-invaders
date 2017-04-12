@@ -11,21 +11,20 @@ void initializeEnemies(GameWindow* GW){
 
     // Approx. half the screen occupied at at time
     int horizOffset = (int)((GW->boundX)/15);
+    int vertOffset = 6;
     for(int i = 0; i < 35; ++i){
         Enemy *E = malloc(sizeof(Enemy));
         Coord *loc = malloc(sizeof(Coord));
 
-        E->isAlive = true;
-
-        loc->x = (i % 7) * horizOffset + 1;
-        loc->y = (i / 7) * 6 + 2;
+        loc->x = (i / 5) * horizOffset + 1;
+        loc->y = (i % 5) * vertOffset + 2;
         E->loc = loc;
 
-        if(i < 7){
+        if(i % 5 == 0){
             E->img1 = GW->images->farEnemy1;
             E->img2 = GW->images->farEnemy2;
         }
-        else if(i < 21){
+        else if(i % 5 == 1 || i % 5 == 2){
             E->img1 = GW->images->midEnemy1;
             E->img2 = GW->images->midEnemy2;
         }
@@ -37,6 +36,11 @@ void initializeEnemies(GameWindow* GW){
         enemies[i] = E;
     }
 
+    GW->shiftCount = 0;
+    GW->enemyHorizOffset = horizOffset;
+    GW->enemyVertOffset = horizOffset;
+    GW->rEnemy = 34;
+    GW->rEnemy = 0;
     GW->E = enemies;
 }
 
@@ -56,28 +60,56 @@ void derenderEnemies(GameWindow* GW){
             derenderImg(GW,GW->E[i]->img2,GW->E[i]->loc->y,GW->E[i]->loc->x);
 }
 
-int getBlockWidth(GameWindow* GW){
+// Checks leftmost enemy index and updates if necessary
+void checkLeftBound(GameWindow* GW){
+    if(GW->E[GW->lEnemy]) return;
     int i;
-    for(i = 7; i > 0; i--)
-        if(GW->colCount[i]) break;
-    return i;
+    for(i = GW->lEnemy; i < NUM_ENEMIES; i++)
+        if(GW->E[i]) break;
+    GW->lEnemy = i;
+}
+
+// Checks rightmost enemy index and updates if necessary
+void checkRightBound(GameWindow* GW){
+    if(GW->E[GW->rEnemy]) return;
+    int i;
+    for(i = GW->rEnemy; i >= 0; i--)
+        if(GW->E[i]) break;
+    GW->lEnemy = i;
+}
+
+int getBlockWidth(int lInd, int rInd){
+    int lCol = lInd/5;
+    int rCol = rInd/5;
+    return rCol-lCol+1;
 }
 
 void moveEnemyBlockLeft(GameWindow* GW){
-    int width = getBlockWidth(GW);
-    if(E->loc->x > 1){
-        derenderImg(GW,E->img1,E->loc->y,E->loc->x);
-        --E->loc->x;
+    checkLeftBound(GW);
+    int blockWidth = getBlockWidth(GW->lEnemy,GW->rEnemy);
+    if(GW->shiftCount + (7-blockWidth) * GW->enemyHorizOffset > 0){
+        --GW->shiftCount;
+        for(int i = 0; i < NUM_ENEMIES; i++){
+            if(GW->E[i]){
+                derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
+                --GW->E[i]->loc->x;
+           }
+        }
     }
     wrefresh(GW->W);
 }
 
 void moveEnemyBlockRight(GameWindow* GW){
-    int width = getBlockWidth(GW);
-    if(E->loc->x > 1){
-    if(E->loc->x < (GW->boundX - E->img1->xDim)){
-        derenderImg(GW,E->img1,E->loc->y,E->loc->x);
-        --E->loc->x;
+    checkRightBound(GW);
+    int blockWidth = getBlockWidth(GW->lEnemy,GW->rEnemy);
+    if(GW->shiftCount > GW->boundX-(blockWidth*GW->enemyHorizOffset)){
+        ++GW->shiftCount;
+        for(int i = 0; i < NUM_ENEMIES; i++){
+            if(GW->E[i]){
+                derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
+                ++GW->E[i]->loc->x;
+           }
+        }
     }
     wrefresh(GW->W);
 }
