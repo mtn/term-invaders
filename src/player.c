@@ -12,7 +12,7 @@ void initializePlayer(GameWindow* GW){
 
     Coord *playerLoc = malloc(sizeof(Coord));
     playerLoc->x = (int)(GW->boundX/2);
-    playerLoc->y = GW->boundY-3; P->loc = playerLoc;
+    playerLoc->y = GW->boundY-4; P->loc = playerLoc;
 
     GW->P = P;
 }

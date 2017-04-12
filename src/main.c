@@ -135,14 +135,13 @@ GameWindow* setupGame(int yMax, int xMax){
     gameWin->boundX = boundX;
     gameWin->boundY = boundY;
     gameWin->state = 0;
+    gameWin->shiftDir = LEFT;
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
     nodelay(gameWin->W,TRUE);
     refresh();
     box(gameWin->W,0,0);
     wrefresh(gameWin->W);
-
-    /* halfdelay(3); // The game proceeds in the absence of input after 1/10 sec */
 
     return gameWin;
 }
@@ -215,83 +214,35 @@ void initCurses(){
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 }
 
-void loadImages(GameWindow* GW){
-    FILE *fp;
+Image* loadImage(char* filePath){
     int xDim, yDim;
+    Image* img = malloc(sizeof(Image));
+    FILE* fp = fopen(filePath,"r");
+    fscanf(fp,"%d,%d",&xDim,&yDim);
+
+    char** imgStr = malloc(yDim*sizeof(char*));
+    for(int i = 0; i < yDim; i++){
+        imgStr[i] = malloc(sizeof(char)*(xDim+1));
+        fscanf(fp,"%s",imgStr[i]);
+    }
+    img->img = imgStr;
+    img->xDim = xDim;
+    img->yDim = yDim;
+
+    return img;
+}
+
+void loadImages(GameWindow* GW){
     Images *images  = malloc(sizeof(Images));
 
-    images->player = malloc(sizeof(Image));
-    fp = fopen("img/player.txt","r");
-    fscanf(fp,"%d,%d",&xDim,&yDim);
-    images->player->img = malloc(yDim*sizeof(char*));
-    for(int i = 0; i < yDim; i++){
-        images->player->img[i] = malloc(sizeof(char)*(xDim+1));
-        fscanf(fp,"%s",images->player->img[i]);
-    }
-    images->player->xDim = xDim;
-    images->player->yDim = yDim;
+    images->player = loadImage("img/player.txt");
+    images->nearEnemy1 = loadImage("img/nearEnemy1.txt");
+    images->nearEnemy2 = loadImage("img/nearEnemy2.txt");
+    images->midEnemy1 = loadImage("img/midEnemy1.txt");
+    images->midEnemy2 = loadImage("img/midEnemy2.txt");
+    images->farEnemy1 = loadImage("img/farEnemy1.txt");
+    images->farEnemy2 = loadImage("img/farEnemy2.txt");
 
-
-    images->nearEnemy1 = malloc(sizeof(Image));
-    images->nearEnemy2 = malloc(sizeof(Image));
-    fp = fopen("img/nearEnemy.txt","r");
-    fscanf(fp,"%d,%d",&xDim,&yDim);
-    images->nearEnemy1->img = malloc(yDim*sizeof(char*));
-    images->nearEnemy2->img = malloc(yDim*sizeof(char*));
-    for(int i = 0; i < yDim; i++){
-        images->nearEnemy1->img[i] = malloc(sizeof(char)*(xDim+1));
-        fscanf(fp,"%s",images->nearEnemy1->img[i]);
-    }
-    images->nearEnemy1->xDim = xDim;
-    images->nearEnemy1->yDim = yDim;
-    for(int i = 0; i < yDim; i++){
-        images->nearEnemy2->img[i] = malloc(sizeof(char)*(xDim+1));
-        fscanf(fp,"%s",images->nearEnemy2->img[i]);
-    }
-    images->nearEnemy2->xDim = xDim;
-    images->nearEnemy2->yDim = yDim;
-
-
-    images->midEnemy1 = malloc(sizeof(Image));
-    images->midEnemy2 = malloc(sizeof(Image));
-    fp = fopen("img/midEnemy.txt","r");
-    images->midEnemy1->img = malloc(yDim*sizeof(char*));
-    images->midEnemy2->img = malloc(yDim*sizeof(char*));
-    fscanf(fp,"%d,%d",&xDim,&yDim);
-    for(int i = 0; i < yDim; i++){
-        images->midEnemy1->img[i] = malloc(sizeof(char)*(xDim+1));
-        fscanf(fp,"%s",images->midEnemy1->img[i]);
-    }
-    images->midEnemy1->xDim = xDim;
-    images->midEnemy1->yDim = yDim;
-    for(int i = 0; i < yDim; i++){
-        images->midEnemy2->img[i] = malloc(sizeof(char)*(xDim+1));
-        fscanf(fp,"%s",images->midEnemy2->img[i]);
-    }
-    images->midEnemy2->xDim = xDim;
-    images->midEnemy2->yDim = yDim;
-
-
-    images->farEnemy1 = malloc(sizeof(Image));
-    images->farEnemy2 = malloc(sizeof(Image));
-    fp = fopen("img/farEnemy.txt","r");
-    images->farEnemy1->img = malloc(yDim*sizeof(char*));
-    images->farEnemy2->img = malloc(yDim*sizeof(char*));
-    fscanf(fp,"%d,%d",&xDim,&yDim);
-    for(int i = 0; i < yDim; i++){
-        images->farEnemy1->img[i] = malloc(sizeof(char)*(xDim+1));
-        fscanf(fp,"%s",images->farEnemy1->img[i]);
-    }
-    images->farEnemy1->xDim = xDim;
-    images->farEnemy1->yDim = yDim;
-    for(int i = 0; i < yDim; i++){
-        images->farEnemy2->img[i] = malloc(sizeof(char)*(xDim+1));
-        fscanf(fp,"%s",images->farEnemy2->img[i]);
-    }
-    images->farEnemy2->xDim = xDim;
-    images->farEnemy2->yDim = yDim;
-
-    fclose(fp);
     GW->images = images;
 }
 

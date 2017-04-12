@@ -1,6 +1,8 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#define LEFT         0
+#define RIGHT        1
 #define MAX_ENEMIES 55
 
 #include <ncurses.h>
@@ -41,6 +43,7 @@ typedef struct {
 
     Images* images;
     int state;           // 0 or 1 for alternating animations
+    int shiftDir;        // Shift direction of enemy "block"
 
     int boundX;          // For convenience
     int boundY;
