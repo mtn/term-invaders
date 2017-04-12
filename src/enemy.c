@@ -39,8 +39,8 @@ void initializeEnemies(GameWindow* GW){
     GW->shiftCount = 0;
     GW->enemyHorizOffset = horizOffset;
     GW->enemyVertOffset = horizOffset;
+    GW->lEnemy = 0;
     GW->rEnemy = 34;
-    GW->rEnemy = 0;
     GW->E = enemies;
 }
 
@@ -84,32 +84,41 @@ int getBlockWidth(int lInd, int rInd){
     return rCol-lCol+1;
 }
 
-void moveEnemyBlockLeft(GameWindow* GW){
-    checkLeftBound(GW);
+// Checks if shift is allowable and updates direction if not
+void checkShiftDir(GameWindow* GW){
     int blockWidth = getBlockWidth(GW->lEnemy,GW->rEnemy);
-    if(GW->shiftCount + (7-blockWidth) * GW->enemyHorizOffset > 0){
-        --GW->shiftCount;
-        for(int i = 0; i < NUM_ENEMIES; i++){
-            if(GW->E[i]){
-                derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
-                --GW->E[i]->loc->x;
-           }
-        }
+    switch(GW->shiftDir){
+        case LEFT:
+            checkLeftBound(GW);
+            if(GW->shiftCount + (7-blockWidth) * GW->enemyHorizOffset > 0) return;
+            else GW->shiftDir = !GW->shiftDir;
+            break;
+        case RIGHT:
+            checkRightBound(GW);
+            if(GW->shiftCount < GW->boundX-(blockWidth*GW->enemyHorizOffset)+4) return;
+            else GW->shiftDir = !GW->shiftDir;
+            break;
+    }
+}
+
+void moveEnemyBlockLeft(GameWindow* GW){
+    --GW->shiftCount;
+    for(int i = 0; i < NUM_ENEMIES; i++){
+        if(GW->E[i]){
+            derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
+            --GW->E[i]->loc->x;
+       }
     }
     wrefresh(GW->W);
 }
 
 void moveEnemyBlockRight(GameWindow* GW){
-    checkRightBound(GW);
-    int blockWidth = getBlockWidth(GW->lEnemy,GW->rEnemy);
-    if(GW->shiftCount > GW->boundX-(blockWidth*GW->enemyHorizOffset)){
-        ++GW->shiftCount;
-        for(int i = 0; i < NUM_ENEMIES; i++){
-            if(GW->E[i]){
-                derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
-                ++GW->E[i]->loc->x;
-           }
-        }
+    ++GW->shiftCount;
+    for(int i = 0; i < NUM_ENEMIES; i++){
+        if(GW->E[i]){
+            derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
+            ++GW->E[i]->loc->x;
+       }
     }
     wrefresh(GW->W);
 }

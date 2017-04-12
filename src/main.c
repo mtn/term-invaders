@@ -175,7 +175,8 @@ void runGame(GameWindow* gameWin){
     while((gameWin->P)->health > 0){
         temp = clock() - t;
         secsElapsed = ((double)temp)/CLOCKS_PER_SEC; // seconds
-        if(secsElapsed >= 0.5){
+        if(secsElapsed >= 0.07){
+            checkShiftDir(gameWin);
             if(gameWin->shiftDir == LEFT) moveEnemyBlockLeft(gameWin);
             else moveEnemyBlockRight(gameWin);
             renderEnemies(gameWin);
