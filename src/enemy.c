@@ -1,4 +1,5 @@
 #define ENEMY_WIDTH 12
+#define NUM_ENEMIES 35
 
 #include <stdlib.h>
 
@@ -6,25 +7,25 @@
 #include "lib/enemy.h"
 
 void initializeEnemies(GameWindow* GW){
-    EnemyLL* enemyLL = malloc(sizeof(EnemyLL));
-    enemyLL->prev = NULL;
-    enemyLL->next = NULL;
-    EnemyLL* first = enemyLL;
+    Enemy** enemies = malloc(NUM_ENEMIES*sizeof(Enemy*));
 
-    for(int i = 0; i < 55; ++i){
+    // Approx. half the screen occupied at at time
+    int horizOffset = (int)((GW->boundX)/15);
+    for(int i = 0; i < 35; ++i){
         Enemy *E = malloc(sizeof(Enemy));
         Coord *loc = malloc(sizeof(Coord));
 
         E->isAlive = true;
-        loc->x = (i % 11) * 15 + 2;
-        loc->y = (i / 11) * 6 + 2;
+
+        loc->x = (i % 7) * horizOffset + 1;
+        loc->y = (i / 7) * 6 + 2;
         E->loc = loc;
 
-        if(i < 11){
+        if(i < 7){
             E->img1 = GW->images->farEnemy1;
             E->img2 = GW->images->farEnemy2;
         }
-        else if(i < 33){
+        else if(i < 21){
             E->img1 = GW->images->midEnemy1;
             E->img2 = GW->images->midEnemy2;
         }
@@ -33,46 +34,37 @@ void initializeEnemies(GameWindow* GW){
             E->img2 = GW->images->nearEnemy2;
         }
 
-        enemyLL->E = E;
-        if(i != 54){
-            EnemyLL* nextLink = malloc(sizeof(EnemyLL));
-            nextLink->next = NULL;
-            nextLink->prev = enemyLL;
-            enemyLL->next = nextLink;
-            enemyLL = enemyLL->next;
-        }
+        enemies[i] = E;
     }
 
-    GW->ELL = first;
+    GW->E = enemies;
 }
 
 void renderEnemies(GameWindow* GW){
-    // TODO add sprite alternation
-    EnemyLL* e = GW->ELL;
-    while(e){
-        // TODO better naming lol
+    for(int i = 0; i < NUM_ENEMIES; i++)
         if(GW->state)
-            renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+            renderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
         else
-            renderImg(GW,e->E->img2,e->E->loc->y,e->E->loc->x);
-        e = e->next;
-    }
+            renderImg(GW,GW->E[i]->img2,GW->E[i]->loc->y,GW->E[i]->loc->x);
 }
 
 void derenderEnemies(GameWindow* GW){
-    // TODO add sprite alternation
-    EnemyLL* e = GW->ELL;
-    while(e){
-        // TODO better naming lol
+    for(int i = 0; i < NUM_ENEMIES; i++)
         if(GW->state)
-            derenderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+            derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
         else
-            derenderImg(GW,e->E->img2,e->E->loc->y,e->E->loc->x);
-        e = e->next;
-    }
+            derenderImg(GW,GW->E[i]->img2,GW->E[i]->loc->y,GW->E[i]->loc->x);
 }
 
-void moveEnemyLeft(GameWindow* GW, Enemy* E){
+int getBlockWidth(GameWindow* GW){
+    int i;
+    for(i = 7; i > 0; i--)
+        if(GW->colCount[i]) break;
+    return i;
+}
+
+void moveEnemyBlockLeft(GameWindow* GW){
+    int width = getBlockWidth(GW);
     if(E->loc->x > 1){
         derenderImg(GW,E->img1,E->loc->y,E->loc->x);
         --E->loc->x;
@@ -80,7 +72,9 @@ void moveEnemyLeft(GameWindow* GW, Enemy* E){
     wrefresh(GW->W);
 }
 
-void moveEnemyRight(GameWindow* GW, Enemy* E){
+void moveEnemyBlockRight(GameWindow* GW){
+    int width = getBlockWidth(GW);
+    if(E->loc->x > 1){
     if(E->loc->x < (GW->boundX - E->img1->xDim)){
         derenderImg(GW,E->img1,E->loc->y,E->loc->x);
         --E->loc->x;

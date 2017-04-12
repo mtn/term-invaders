@@ -22,12 +22,10 @@ struct Enemy {
 };
 
 void initializeEnemies(GameWindow* GW);
-void moveEnemyLeft(GameWindow* GW, Enemy* E);
-void moveEnemyRight(GameWindow* GW, Enemy* E);
+void moveEnemyBlockLeft(GameWindow* GW);
+void moveEnemyBlockRight(GameWindow* GW);
 void renderEnemies(GameWindow* GW);
 void derenderEnemies(GameWindow* GW);
-void clearEnemies(GameWindow* GW);
-Coord* positionFromInd(GameWindow* GW,int ind);
 
 #endif /* ENEMY_H */
 

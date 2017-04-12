@@ -11,7 +11,6 @@
 
 typedef WINDOW Window;
 typedef struct Enemy Enemy;
-typedef struct EnemyLL EnemyLL;
 typedef struct Player Player;
 
 typedef struct {
@@ -39,11 +38,13 @@ typedef struct {
 typedef struct {
     Window* W;
     Player* P;
-    EnemyLL* ELL;
+    Enemy** E;
 
     Images* images;
     int state;           // 0 or 1 for alternating animations
     int shiftDir;        // Shift direction of enemy "block"
+    int numShifts;
+    int* colCount;       // Count of live enemies per block column
 
     int boundX;          // For convenience
     int boundY;

@@ -4,6 +4,9 @@
 #define MAX_X_DIM          12
 #define MAX_Y_DIM           4
 #define NUM_IMAGES          9
+#define NUM_COLS            7
+#define NUM_ROWS            5
+
 
 #include <ncurses.h>
 #include <stdlib.h>
@@ -136,6 +139,9 @@ GameWindow* setupGame(int yMax, int xMax){
     gameWin->boundY = boundY;
     gameWin->state = 0;
     gameWin->shiftDir = LEFT;
+    gameWin->numShifts = 0;
+    gameWin->colCount = malloc(7*sizeof(int));
+    for(int i = 0; i < NUM_COLS; i++) gameWin->colCount[i] = NUM_ROWS;
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
     nodelay(gameWin->W,TRUE);
@@ -154,11 +160,9 @@ void renderImg(GameWindow* GW, Image* img, int y, int x){
 }
 
 void derenderImg(GameWindow* GW, Image* img, int y, int x){
-    for(int i = 0; i < img->xDim; i++){
-        for(int j = 0; j < img->yDim; j++){
+    for(int i = 0; i < img->xDim; i++)
+        for(int j = 0; j < img->yDim; j++)
             mvwaddch(GW->W,y+j,x+i,' ');
-        }
-    }
 }
 
 void runGame(GameWindow* gameWin){
@@ -174,7 +178,8 @@ void runGame(GameWindow* gameWin){
         temp = clock() - t;
         secsElapsed = ((double)temp)/CLOCKS_PER_SEC; // seconds
         if(secsElapsed >= 0.5){
-            derenderEnemies(gameWin);
+            if(shiftDir == LEFT)
+
             renderEnemies(gameWin);
             gameWin->state = !gameWin->state;
             t = clock();
