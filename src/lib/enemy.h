@@ -7,13 +7,6 @@
 #include "main.h"
 
 
-struct EnemyLL {
-    Enemy* E;
-    struct EnemyLL* next;
-    struct EnemyLL* prev;
-};
-
-// Enemies don't require individual positions
 struct Enemy {
     Coord* loc;
     Image* img1;
@@ -23,12 +16,13 @@ struct Enemy {
 void initializeEnemies(GameWindow* GW);
 void moveEnemyBlockLeft(GameWindow* GW);
 void moveEnemyBlockRight(GameWindow* GW);
+bool moveEnemyBlockDown(GameWindow* GW);
 void renderEnemies(GameWindow* GW);
 void checkLeftBound(GameWindow* GW);
 void checkRightBound(GameWindow* GW);
 void derenderEnemies(GameWindow* GW);
 int getBlockWidth(int lInd, int rInd);
-void checkShiftDir(GameWindow* GW);
+bool checkShiftDir(GameWindow* GW);
 
 #endif /* ENEMY_H */
 

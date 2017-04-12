@@ -85,20 +85,33 @@ int getBlockWidth(int lInd, int rInd){
 }
 
 // Checks if shift is allowable and updates direction if not
-void checkShiftDir(GameWindow* GW){
+bool checkShiftDir(GameWindow* GW){
     int blockWidth = getBlockWidth(GW->lEnemy,GW->rEnemy);
     switch(GW->shiftDir){
         case LEFT:
             checkLeftBound(GW);
-            if(GW->shiftCount + (7-blockWidth) * GW->enemyHorizOffset > 0) return;
-            else GW->shiftDir = !GW->shiftDir;
+            if(GW->shiftCount + (7-blockWidth) * GW->enemyHorizOffset > 0) return true;
+            else{
+                if(!moveEnemyBlockDown(GW)) return false;
+                GW->shiftDir = !GW->shiftDir;
+            }
             break;
         case RIGHT:
             checkRightBound(GW);
-            if(GW->shiftCount < GW->boundX-(blockWidth*GW->enemyHorizOffset)+4) return;
+            if(GW->shiftCount < GW->boundX-(blockWidth*GW->enemyHorizOffset)+4) return true;
             else GW->shiftDir = !GW->shiftDir;
             break;
     }
+    return true;
+}
+
+bool moveEnemyBlockDown(GameWindow* GW){
+    for(int i = 0; i < NUM_ENEMIES; i++){
+        derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
+        ++GW->E[i]->loc->y;
+        if(GW->E[i]->loc->y > GW->boundY - 8) return false;
+    }
+    return true;
 }
 
 void moveEnemyBlockLeft(GameWindow* GW){

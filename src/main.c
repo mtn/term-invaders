@@ -6,6 +6,7 @@
 #define NUM_IMAGES          9
 #define NUM_COLS            7
 #define NUM_ROWS            5
+#define SHIFT_INTERVAL    0.5
 
 
 #include <ncurses.h>
@@ -16,16 +17,6 @@
 #include "lib/main.h"
 #include "lib/enemy.h"
 #include "lib/player.h"
-
-bool wmvaddch(Window* W, int y, int x, int ch){
-    int xMax, yMax;
-    getmaxyx(W,yMax,xMax);
-    if(yMax < y || xMax < x) return false;
-
-    wmove(W,y,x);
-    waddch(W,ch);
-    return true;
-}
 
 void freeGW(GameWindow* GW){
     // TODO
@@ -138,7 +129,7 @@ GameWindow* setupGame(int yMax, int xMax){
     gameWin->boundX = boundX;
     gameWin->boundY = boundY;
     gameWin->state = 0;
-    gameWin->shiftDir = LEFT;
+    gameWin->shiftDir = RIGHT;
     gameWin->shiftCount = 0;
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
@@ -175,10 +166,12 @@ void runGame(GameWindow* gameWin){
     while((gameWin->P)->health > 0){
         temp = clock() - t;
         secsElapsed = ((double)temp)/CLOCKS_PER_SEC; // seconds
-        if(secsElapsed >= 0.07){
-            checkShiftDir(gameWin);
-            if(gameWin->shiftDir == LEFT) moveEnemyBlockLeft(gameWin);
-            else moveEnemyBlockRight(gameWin);
+        if(secsElapsed >= SHIFT_INTERVAL){
+            if(!checkShiftDir(gameWin)) break;
+            else{
+                if(gameWin->shiftDir == LEFT) moveEnemyBlockLeft(gameWin);
+                else moveEnemyBlockRight(gameWin);
+            }
             renderEnemies(gameWin);
             gameWin->state = !gameWin->state;
             t = clock();
