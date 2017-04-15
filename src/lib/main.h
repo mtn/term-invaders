@@ -10,6 +10,7 @@
 
 
 typedef WINDOW Window;
+typedef struct EnemyLL EnemyLL;
 typedef struct Enemy Enemy;
 typedef struct Player Player;
 
@@ -38,7 +39,7 @@ typedef struct {
 typedef struct {
     Window* W;
     Player* P;
-    Enemy** E;
+    EnemyLL* ELL;
     int enemyHorizOffset;
     int enemyVertOffset;
 

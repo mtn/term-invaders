@@ -7,8 +7,16 @@
 #include "main.h"
 
 
+struct EnemyLL {
+    Enemy* E;
+    EnemyLL* next;
+    EnemyLL* prev;
+};
+
 struct Enemy {
     Coord* loc;
+    Enemy* above;
+    Enemy* below;
     Image* img1;
     Image* img2;
 };
@@ -18,11 +26,7 @@ void moveEnemyBlockLeft(GameWindow* GW);
 void moveEnemyBlockRight(GameWindow* GW);
 bool moveEnemyBlockDown(GameWindow* GW);
 void renderEnemies(GameWindow* GW);
-void checkLeftBound(GameWindow* GW);
-void checkRightBound(GameWindow* GW);
 void derenderEnemies(GameWindow* GW);
-int getBlockWidth(int lCol, int rCol);
-bool checkShiftDir(GameWindow* GW);
 
 #endif /* ENEMY_H */
 

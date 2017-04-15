@@ -155,12 +155,12 @@ void derenderImg(GameWindow* GW, Image* img, int y, int x){
 void runGame(GameWindow* gameWin){
     initializePlayer(gameWin);
     initializeEnemies(gameWin);
+    renderEnemies(gameWin);
+    renderPlayer(gameWin);
 
     int choice;
     double secsElapsed, temp;
     clock_t t = clock();
-    renderEnemies(gameWin);
-    renderPlayer(gameWin);
     while((gameWin->P)->health > 0){
         temp = clock() - t;
         secsElapsed = ((double)temp)/CLOCKS_PER_SEC; // seconds

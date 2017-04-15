@@ -8,12 +8,15 @@
 #include "lib/enemy.h"
 
 void initializeEnemies(GameWindow* GW){
-    Enemy** enemies = malloc(NUM_ENEMIES*sizeof(Enemy*));
+    EnemyLL* enemyLL = malloc(sizeof(EnemyLL));
+    enemyLL->prev = NULL;
+    enemyLL->next = NULL;
+    EnemyLL* first = enemyLL;
 
     // Approx. half the screen occupied at at time
     int horizOffset = (int)((GW->boundX)/15);
     int vertOffset = 6;
-    for(int i = 0; i < 35; ++i){
+    for(int i = 0; i < NUM_ENEMIES; ++i){
         Enemy *E = malloc(sizeof(Enemy));
         Coord *loc = malloc(sizeof(Coord));
 
@@ -33,63 +36,87 @@ void initializeEnemies(GameWindow* GW){
             E->img1 = GW->images->nearEnemy1;
             E->img2 = GW->images->nearEnemy2;
         }
-
-        enemies[i] = E;
+        enemyLL->E = E;
+        if(i != NUM_ENEMIES-1){
+            EnemyLL* nextLink = malloc(sizeof(EnemyLL));
+            nextLink->next = NULL;
+            nextLink->prev = enemyLL;
+            enemyLL->next = nextLink;
+            enemyLL = enemyLL->next;
+        }
     }
 
     GW->enemyHorizOffset = horizOffset;
     GW->enemyVertOffset = horizOffset;
-    GW->E = enemies;
+
+    GW->ELL = first;
 }
 
 void renderEnemies(GameWindow* GW){
-    for(int i = 0; i < NUM_ENEMIES; i++)
+    EnemyLL* e = GW->ELL;
+    while(e){
+        // TODO better naming lol
         if(GW->state)
-            renderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
+            renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
         else
-            renderImg(GW,GW->E[i]->img2,GW->E[i]->loc->y,GW->E[i]->loc->x);
+            renderImg(GW,e->E->img2,e->E->loc->y,e->E->loc->x);
+        e = e->next;
+    }
 }
 
 void derenderEnemies(GameWindow* GW){
-    for(int i = 0; i < NUM_ENEMIES; i++)
+    EnemyLL* e = GW->ELL;
+    while(e){
         if(GW->state)
-            derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
+            renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
         else
-            derenderImg(GW,GW->E[i]->img2,GW->E[i]->loc->y,GW->E[i]->loc->x);
+            renderImg(GW,e->E->img2,e->E->loc->y,e->E->loc->x);
+        e = e->next;
+    }
 }
 
 bool moveEnemyBlockDown(GameWindow* GW){
-    for(int i = 0; i < NUM_ENEMIES; i++){
-        derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
-        ++GW->E[i]->loc->y;
-        if(GW->E[i]->loc->y > GW->boundY - 8) return false;
+    EnemyLL* e = GW->ELL;
+    while(e){
+        derenderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x); // img1/img2 don't matter for derender
+        ++e->E->loc->y;
+        if(GW->state)
+            renderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+        else
+            renderImg(GW,e->E->img2,e->E->loc->y,e->E->loc->x);
+        if(e->E->loc->y > GW->boundY - 8) return false;
+        e = e->next;
     }
     return true;
 }
 
 void moveEnemyBlockLeft(GameWindow* GW){
-    for(int i = 0; i < NUM_ENEMIES; i++){
-        if(GW->E[i]){
-            derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
-            --GW->E[i]->loc->x;
-            if(GW->E[i]->loc->x == 1 && GW->shiftDir == LEFT){
+    EnemyLL* e = GW->ELL;
+    while(e){
+        if(e->E){
+            derenderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+            --e->E->loc->x;
+            if(e->E->loc->x == 1 && GW->shiftDir == LEFT){
                 GW->shiftDir = RIGHT;
                 moveEnemyBlockDown(GW);
             }
-       }
+        }
+        e = e->next;
     }
     wrefresh(GW->W);
 }
 
 void moveEnemyBlockRight(GameWindow* GW){
-    for(int i = 0; i < NUM_ENEMIES; i++){
-        if(GW->E[i]){
-            derenderImg(GW,GW->E[i]->img1,GW->E[i]->loc->y,GW->E[i]->loc->x);
-            ++GW->E[i]->loc->x;
-            if(GW->E[i]->loc->x == GW->boundX - ENEMY_WIDTH){
+    EnemyLL* e = GW->ELL;
+    while(e){
+        if(e->E){
+            derenderImg(GW,e->E->img1,e->E->loc->y,e->E->loc->x);
+            ++e->E->loc->x;
+            if(e->E->loc->x == GW->boundX - ENEMY_WIDTH){
                 GW->shiftDir = LEFT;
             }
-       }
+        }
+        e = e->next;
     }
     wrefresh(GW->W);
 }
