@@ -6,7 +6,7 @@
 #define NUM_IMAGES          9
 #define NUM_COLS            7
 #define NUM_ROWS            5
-#define SHIFT_INTERVAL    0.5
+#define SHIFT_INTERVAL    0.03
 
 
 #include <ncurses.h>
@@ -129,7 +129,6 @@ GameWindow* setupGame(int yMax, int xMax){
     gameWin->boundY = boundY;
     gameWin->state = 0;
     gameWin->shiftDir = RIGHT;
-    gameWin->shiftCount = 0;
     gameWin->W = newwin(boundY,boundX,borderTB,borderLR);
     keypad(gameWin->W,TRUE);
     nodelay(gameWin->W,TRUE);
@@ -166,11 +165,8 @@ void runGame(GameWindow* gameWin){
         temp = clock() - t;
         secsElapsed = ((double)temp)/CLOCKS_PER_SEC; // seconds
         if(secsElapsed >= SHIFT_INTERVAL){
-            if(!checkShiftDir(gameWin)) break;
-            else{
-                if(gameWin->shiftDir == LEFT) moveEnemyBlockLeft(gameWin);
-                else moveEnemyBlockRight(gameWin);
-            }
+            if(gameWin->shiftDir == LEFT) moveEnemyBlockLeft(gameWin);
+            else moveEnemyBlockRight(gameWin);
             renderEnemies(gameWin);
             gameWin->state = !gameWin->state;
             t = clock();

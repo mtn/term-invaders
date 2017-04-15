@@ -42,14 +42,9 @@ typedef struct {
     int enemyHorizOffset;
     int enemyVertOffset;
 
-    int* enemyCol;        // Number of enemies per col
-    int lEnemyCol;
-    int rEnemyCol;
-
     Images* images;
     int state;           // 0 or 1 for alternating animations
     int shiftDir;        // Shift direction of enemy "block"
-    int shiftCount;
 
     int boundX;          // For convenience
     int boundY;
