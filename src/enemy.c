@@ -1,5 +1,6 @@
 #define ENEMY_WIDTH 12
 #define NUM_ENEMIES 35
+#define NUM_COLS     7
 
 #include <stdlib.h>
 
@@ -39,8 +40,10 @@ void initializeEnemies(GameWindow* GW){
     GW->shiftCount = 0;
     GW->enemyHorizOffset = horizOffset;
     GW->enemyVertOffset = horizOffset;
-    GW->lEnemy = 0;
-    GW->rEnemy = 34;
+    GW->enemyCol = malloc(NUM_COLS*sizeof(int));
+    for(int i = 0; i < NUM_COLS; i++) GW->enemyCol[i] = NUM_ENEMIES/NUM_COLS;
+    GW->lEnemyCol = 0;
+    GW->rEnemyCol = NUM_COLS-1;
     GW->E = enemies;
 }
 
@@ -62,31 +65,29 @@ void derenderEnemies(GameWindow* GW){
 
 // Checks leftmost enemy index and updates if necessary
 void checkLeftBound(GameWindow* GW){
-    if(GW->E[GW->lEnemy]) return;
+    if(GW->enemyCol[GW->lEnemyCol]) return;
     int i;
-    for(i = GW->lEnemy; i < NUM_ENEMIES; i++)
-        if(GW->E[i]) break;
-    GW->lEnemy = i;
+    for(i = GW->lEnemyCol; i <= NUM_COLS; i++)
+        if(GW->enemyCol[i]) break;
+    GW->lEnemyCol = i;
 }
 
 // Checks rightmost enemy index and updates if necessary
 void checkRightBound(GameWindow* GW){
-    if(GW->E[GW->rEnemy]) return;
+    if(GW->enemyCol[GW->rEnemyCol]) return;
     int i;
-    for(i = GW->rEnemy; i >= 0; i--)
-        if(GW->E[i]) break;
-    GW->lEnemy = i;
+    for(i = GW->rEnemyCol; i >= 0; i--)
+        if(GW->enemyCol[i]) break;
+    GW->lEnemyCol = i;
 }
 
-int getBlockWidth(int lInd, int rInd){
-    int lCol = lInd/5;
-    int rCol = rInd/5;
+int getBlockWidth(int lCol, int rCol){
     return rCol-lCol+1;
 }
 
 // Checks if shift is allowable and updates direction if not
 bool checkShiftDir(GameWindow* GW){
-    int blockWidth = getBlockWidth(GW->lEnemy,GW->rEnemy);
+    int blockWidth = getBlockWidth(GW->lEnemyCol,GW->rEnemyCol);
     switch(GW->shiftDir){
         case LEFT:
             checkLeftBound(GW);

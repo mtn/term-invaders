@@ -39,10 +39,12 @@ typedef struct {
     Window* W;
     Player* P;
     Enemy** E;
-    int rEnemy;          // Rightmost enemy
-    int lEnemy;          // Leftmost enemy
     int enemyHorizOffset;
     int enemyVertOffset;
+
+    int* enemyCol;        // Number of enemies per col
+    int lEnemyCol;
+    int rEnemyCol;
 
     Images* images;
     int state;           // 0 or 1 for alternating animations

@@ -21,7 +21,7 @@ void renderEnemies(GameWindow* GW);
 void checkLeftBound(GameWindow* GW);
 void checkRightBound(GameWindow* GW);
 void derenderEnemies(GameWindow* GW);
-int getBlockWidth(int lInd, int rInd);
+int getBlockWidth(int lCol, int rCol);
 bool checkShiftDir(GameWindow* GW);
 
 #endif /* ENEMY_H */

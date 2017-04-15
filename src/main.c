@@ -87,8 +87,7 @@ void runStartScreen(int startHeight,int startWidth, int yMax, int xMax){
     char* instructions[2] = {
         "Move your ship with the arrow keys",
         "Press R to pause and R to resume",
-    };
-    for(int i = 0; i < 2; ++i)
+    }; for(int i = 0; i < 2; ++i)
         mvwprintw(startScreen,3 + i,(startWidth-strlen(instructions[i]))/2,instructions[i]);
 
     char* pressEnter = "Press enter to continue...";
