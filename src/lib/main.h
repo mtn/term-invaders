@@ -10,6 +10,8 @@
 
 
 typedef WINDOW Window;
+typedef struct EnemyProjectiles EnemyProjectiles;
+typedef struct Projectile Projectile;
 typedef struct EnemyLL EnemyLL;
 typedef struct Enemy Enemy;
 typedef struct Player Player;
@@ -40,6 +42,7 @@ typedef struct {
     Window* W;
     Player* P;
     EnemyLL* ELL;
+    EnemyProjectiles* EP;
     int enemyHorizOffset;
     int enemyVertOffset;
 
@@ -57,6 +60,7 @@ int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOpt
 void renderImg(GameWindow* GW, Image* img, int y, int x);
 void derenderImg(GameWindow* GW, Image* img, int y, int x);
 void runGame(GameWindow* GW);
+int imgShift(Image* img, int i);
 
 #endif /* MAIN_H */
 

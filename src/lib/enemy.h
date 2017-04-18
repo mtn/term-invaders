@@ -13,6 +13,16 @@ struct EnemyLL {
     EnemyLL* prev;
 };
 
+struct EnemyProjectiles {
+    Projectile* P;
+    EnemyProjectiles* next;
+    EnemyProjectiles* prev;
+};
+
+struct Projectile {
+    Coord* loc;
+};
+
 struct Enemy {
     Coord* loc;
     Enemy* above;
@@ -25,8 +35,9 @@ void initializeEnemies(GameWindow* GW);
 void moveEnemyBlockLeft(GameWindow* GW);
 void moveEnemyBlockRight(GameWindow* GW);
 bool moveEnemyBlockDown(GameWindow* GW);
-void renderEnemies(GameWindow* GW);
 void derenderEnemies(GameWindow* GW);
+void fireProjectile(GameWindow* GW);
+void renderEnemiesandProjectiles(GameWindow* GW);
 
 #endif /* ENEMY_H */
 

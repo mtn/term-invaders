@@ -3,6 +3,7 @@
 #define NUM_COLS     7
 
 #include <stdlib.h>
+#include <time.h>
 
 #include "lib/main.h"
 #include "lib/enemy.h"
@@ -12,12 +13,15 @@ void initializeEnemies(GameWindow* GW){
     enemyLL->prev = NULL;
     enemyLL->next = NULL;
     EnemyLL* first = enemyLL;
+    Enemy* temp = NULL;
 
     // Approx. half the screen occupied at at time
     int horizOffset = (int)((GW->boundX)/15);
     int vertOffset = 6;
     for(int i = 0; i < NUM_ENEMIES; ++i){
         Enemy *E = malloc(sizeof(Enemy));
+        E->above = temp;
+        E->below = NULL;
         Coord *loc = malloc(sizeof(Coord));
 
         loc->x = (i / 5) * horizOffset + 1;
@@ -36,6 +40,9 @@ void initializeEnemies(GameWindow* GW){
             E->img1 = GW->images->nearEnemy1;
             E->img2 = GW->images->nearEnemy2;
         }
+        if(E->above) E->above->below = E;
+        if(i % 5 == 4) temp = NULL;
+        else temp = E;
         enemyLL->E = E;
         if(i != NUM_ENEMIES-1){
             EnemyLL* nextLink = malloc(sizeof(EnemyLL));
@@ -49,6 +56,7 @@ void initializeEnemies(GameWindow* GW){
     GW->enemyHorizOffset = horizOffset;
     GW->enemyVertOffset = horizOffset;
 
+    GW->EP = NULL;
     GW->ELL = first;
 }
 
@@ -103,7 +111,6 @@ void moveEnemyBlockLeft(GameWindow* GW){
         }
         e = e->next;
     }
-    wrefresh(GW->W);
 }
 
 void moveEnemyBlockRight(GameWindow* GW){
@@ -118,6 +125,56 @@ void moveEnemyBlockRight(GameWindow* GW){
         }
         e = e->next;
     }
-    wrefresh(GW->W);
+}
+
+void initProjectile(GameWindow* GW){
+    if(GW->EP){
+        GW->EP->next = malloc(sizeof(EnemyProjectiles));
+        GW->EP->next->prev = GW->EP;
+        GW->EP = GW->EP->next;
+    }
+    else{
+        GW->EP = malloc(sizeof(EnemyProjectiles));
+        GW->EP->prev = NULL;
+    }
+    GW->EP->next = NULL;
+    GW->EP->P = malloc(sizeof(Projectile));
+    GW->EP->P->loc = malloc(sizeof(Coord));
+}
+
+void fireProjectile(GameWindow* GW){
+    // Pick which enemy will fire
+    int randomCol = rand() % GW->boundY;
+    EnemyLL* ell = GW->ELL;
+    while(ell){
+        if(ell->E && !ell->E->below){
+            if(ell->E->loc->x + 7 <= randomCol
+                    || ell->E->loc->x - 7 >= randomCol){
+                initProjectile(GW);
+
+                GW->EP->P->loc->x = ell->E->loc->x;
+                GW->EP->P->loc->y = ell->E->loc->y;
+                break;
+            }
+        }
+        ell = ell->next;
+    }
+}
+
+void renderProjectiles(GameWindow* GW){
+    EnemyProjectiles* p;
+    if(GW->EP) p = GW->EP;
+    else return;
+    while(p){
+        mvwaddch(GW->W,p->P->loc->y,p->P->loc->x,' ');
+        ++p->P->loc->y;
+        mvwaddch(GW->W,p->P->loc->y,p->P->loc->x,'x');
+        p = p->prev;
+    }
+}
+
+void renderEnemiesandProjectiles(GameWindow* GW){
+    renderProjectiles(GW);
+    renderEnemies(GW);
 }
 

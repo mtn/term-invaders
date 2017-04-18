@@ -6,7 +6,7 @@
 #define NUM_IMAGES          9
 #define NUM_COLS            7
 #define NUM_ROWS            5
-#define SHIFT_INTERVAL    0.03
+#define SHIFT_INTERVAL    0.5
 
 
 #include <ncurses.h>
@@ -29,7 +29,6 @@ int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOpt
     mvwprintw(W,1,(menuWidth-strlen(title))/2,title);
     wattroff(W,A_REVERSE);
     mvwprintw(W,3,2,subtitle);
-
     int highlight = 0;
     while(true){
         for(int i = 0; i < numOptions; ++i){
@@ -139,9 +138,15 @@ GameWindow* setupGame(int yMax, int xMax){
     return gameWin;
 }
 
+// i doesn't matter
+int imgShift(Image* img, int i){
+    return (int)((img->xDim-strlen(img->img[i]))/2); // bad naming
+}
+
 void renderImg(GameWindow* GW, Image* img, int y, int x){
+    int shift;
     for(int i = 0; i < img->yDim; i++){
-        int shift = (int)((img->xDim-strlen(img->img[i]))/2); // bad naming
+        shift = imgShift(img,i);
         mvwaddstr(GW->W,y+i,x+shift,img->img[i]);
     }
 }
@@ -155,10 +160,10 @@ void derenderImg(GameWindow* GW, Image* img, int y, int x){
 void runGame(GameWindow* gameWin){
     initializePlayer(gameWin);
     initializeEnemies(gameWin);
-    renderEnemies(gameWin);
+    renderEnemiesandProjectiles(gameWin);
     renderPlayer(gameWin);
 
-    int choice;
+    int choice, random;
     double secsElapsed, temp;
     clock_t t = clock();
     while((gameWin->P)->health > 0){
@@ -167,7 +172,10 @@ void runGame(GameWindow* gameWin){
         if(secsElapsed >= SHIFT_INTERVAL){
             if(gameWin->shiftDir == LEFT) moveEnemyBlockLeft(gameWin);
             else moveEnemyBlockRight(gameWin);
-            renderEnemies(gameWin);
+            random = rand() % 2; // 1/2 chance of enemy shot being fired
+            if(random) fireProjectile(gameWin);
+
+            renderEnemiesandProjectiles(gameWin);
             gameWin->state = !gameWin->state;
             t = clock();
         }
@@ -240,6 +248,7 @@ void loadImages(GameWindow* GW){
 
 int main(){
     int yMax, xMax, renderStatus, startHeight, startWidth;
+    srand(time(NULL));
     initCurses();
     getmaxyx(stdscr,yMax,xMax);
 
