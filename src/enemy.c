@@ -1,11 +1,13 @@
-#define ENEMY_WIDTH  7
-#define NUM_ENEMIES 35
-#define NUM_COLS     7
+#define ENEMY_WIDTH   7
+#define PLAYER_WIDTH  7
+#define NUM_ENEMIES  35
+#define NUM_COLS      7
 
 #include <stdlib.h>
 #include <time.h>
 
 #include "lib/main.h"
+#include "lib/player.h"
 #include "lib/enemy.h"
 
 void initializeEnemies(GameWindow* GW){
@@ -148,8 +150,8 @@ void fireProjectile(GameWindow* GW){
     EnemyLL* ell = GW->ELL;
     while(ell){
         if(ell->E && !ell->E->below){
-            if(ell->E->loc->x + 7 <= randomCol
-                    || ell->E->loc->x - 7 >= randomCol){
+            if(ell->E->loc->x + ENEMY_WIDTH <= randomCol
+                    || ell->E->loc->x - ENEMY_WIDTH >= randomCol){
                 initProjectile(GW);
 
                 GW->EP->P->loc->x = ell->E->loc->x;
@@ -162,14 +164,21 @@ void fireProjectile(GameWindow* GW){
 }
 
 void renderProjectiles(GameWindow* GW){
-    EnemyProjectiles* p;
-    if(GW->EP) p = GW->EP;
+    EnemyProjectiles* ep;
+    if(GW->EP) ep = GW->EP;
     else return;
-    while(p){
-        mvwaddch(GW->W,p->P->loc->y,p->P->loc->x,' ');
-        ++p->P->loc->y;
-        mvwaddch(GW->W,p->P->loc->y,p->P->loc->x,'x');
-        p = p->prev;
+    while(ep){
+        mvwaddch(GW->W,ep->P->loc->y,ep->P->loc->x,' ');
+        if(ep->P->loc->y <= GW->boundY){
+            if(ep->P->loc->x + PLAYER_WIDTH <= GW->P->loc->x
+                    || ep->P->loc->x - PLAYER_WIDTH >= GW->P->loc->x){
+                printw("hi");
+                refresh();
+            }
+        }
+        ++ep->P->loc->y;
+        mvwaddch(GW->W,ep->P->loc->y,ep->P->loc->x,'x');
+        ep = ep->prev;
     }
 }
 
