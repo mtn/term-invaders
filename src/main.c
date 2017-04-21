@@ -1,14 +1,3 @@
-#define K_ENTER            10 // KEY_ENTER is defined to something else by ncurses
-#define MIN_TERM_WIDTH    140
-#define MIN_TERM_HEIGHT    40
-#define MAX_X_DIM          12
-#define MAX_Y_DIM           4
-#define NUM_IMAGES          9
-#define NUM_COLS            7
-#define NUM_ROWS            5
-#define SHIFT_INTERVAL    0.5
-
-
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +6,7 @@
 #include "lib/main.h"
 #include "lib/enemy.h"
 #include "lib/player.h"
+#include "lib/img.h"
 
 void freeGW(GameWindow* GW){
     // TODO
@@ -138,25 +128,6 @@ GameWindow* setupGame(int yMax, int xMax){
     return gameWin;
 }
 
-// i doesn't matter
-int imgShift(Image* img, int i){
-    return (int)((img->xDim-strlen(img->img[i]))/2); // bad naming
-}
-
-void renderImg(GameWindow* GW, Image* img, int y, int x){
-    int shift;
-    for(int i = 0; i < img->yDim; i++){
-        shift = imgShift(img,i);
-        mvwaddstr(GW->W,y+i,x+shift,img->img[i]);
-    }
-}
-
-void derenderImg(GameWindow* GW, Image* img, int y, int x){
-    for(int i = 0; i < img->xDim; i++)
-        for(int j = 0; j < img->yDim; j++)
-            mvwaddch(GW->W,y+j,x+i,' ');
-}
-
 void runGame(GameWindow* gameWin){
     initializePlayer(gameWin);
     initializeEnemies(gameWin);
@@ -214,36 +185,12 @@ void initCurses(){
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 }
 
-Image* loadImage(char* filePath){
-    int xDim, yDim;
-    Image* img = malloc(sizeof(Image));
-    FILE* fp = fopen(filePath,"r");
-    fscanf(fp,"%d,%d",&xDim,&yDim);
-
-    char** imgStr = malloc(yDim*sizeof(char*));
-    for(int i = 0; i < yDim; i++){
-        imgStr[i] = malloc(sizeof(char)*(xDim+1));
-        fscanf(fp,"%s",imgStr[i]);
+int hashFunction(char* imageName){
+    int sum;
+    for(int i = 0; i < strlen(imageName); i++){
+        sum += (int)imageName[i];
     }
-    img->img = imgStr;
-    img->xDim = xDim;
-    img->yDim = yDim;
-
-    return img;
-}
-
-void loadImages(GameWindow* GW){
-    Images *images  = malloc(sizeof(Images));
-
-    images->player = loadImage("img/player.txt");
-    images->nearEnemy1 = loadImage("img/nearEnemy1.txt");
-    images->nearEnemy2 = loadImage("img/nearEnemy2.txt");
-    images->midEnemy1 = loadImage("img/midEnemy1.txt");
-    images->midEnemy2 = loadImage("img/midEnemy2.txt");
-    images->farEnemy1 = loadImage("img/farEnemy1.txt");
-    images->farEnemy2 = loadImage("img/farEnemy2.txt");
-
-    GW->images = images;
+    return sum;
 }
 
 int main(){

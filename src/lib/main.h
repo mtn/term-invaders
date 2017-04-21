@@ -1,42 +1,38 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define LEFT         0
-#define RIGHT        1
-#define MAX_ENEMIES 55
+#define LEFT                0
+#define RIGHT               1
+#define MAX_ENEMIES        55
+#define K_ENTER            10 // KEY_ENTER is defined to something else by ncurses
+#define MIN_TERM_WIDTH    140
+#define MIN_TERM_HEIGHT    40
+#define MAX_X_DIM          12
+#define MAX_Y_DIM           4
+#define NUM_IMAGES          9
+#define NUM_COLS            7
+#define NUM_ROWS            5
+#define SHIFT_INTERVAL    0.5
 
 #include <ncurses.h>
 #include <stdbool.h>
 
 
-typedef WINDOW Window;
 typedef struct EnemyProjectiles EnemyProjectiles;
 typedef struct Projectile Projectile;
 typedef struct EnemyLL EnemyLL;
 typedef struct Enemy Enemy;
 typedef struct Player Player;
+typedef struct Image Image;
+typedef struct ImgTableElem ImgTableElem;
+
+typedef WINDOW Window;
+typedef ImgTableElement** ImgTable;
 
 typedef struct {
     int x;
     int y;
 } Coord, *CoordPtr;
-
-typedef struct {
-    int xDim;
-    int yDim;
-    char** img;
-} Image;
-
-typedef struct {
-    Image* player;
-    Image* nearEnemy1;
-    Image* nearEnemy2;
-    Image* midEnemy1;
-    Image* midEnemy2;
-    Image* farEnemy1;
-    Image* farEnemy2;
-    Image* barricade;
-} Images;
 
 typedef struct {
     Window* W;
@@ -46,7 +42,7 @@ typedef struct {
     int enemyHorizOffset;
     int enemyVertOffset;
 
-    Images* images;
+    ImgTable images;
     int state;           // 0 or 1 for alternating animations
     int shiftDir;        // Shift direction of enemy "block"
 
@@ -57,10 +53,7 @@ typedef struct {
 
 void freeGW(GameWindow* GW);
 int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOptions, char** options); // returns selected index
-void renderImg(GameWindow* GW, Image* img, int y, int x);
-void derenderImg(GameWindow* GW, Image* img, int y, int x);
 void runGame(GameWindow* GW);
-int imgShift(Image* img, int i);
 
 #endif /* MAIN_H */
 

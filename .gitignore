@@ -32,3 +32,4 @@ invader
 # Debug files
 *.dSYM/
 *.su
+test.*
