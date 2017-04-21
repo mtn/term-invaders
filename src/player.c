@@ -4,15 +4,17 @@
 
 #include "lib/player.h"
 #include "lib/main.h"
+#include "lib/img.h"
 
 void initializePlayer(GameWindow* GW){
     Player *P = malloc(sizeof(Player));
-    P->img = GW->images->player;
+    P->img = searchImgTable(GW,"img/player.txt");
     P->health = MAX_HEALTH;
 
     Coord *playerLoc = malloc(sizeof(Coord));
     playerLoc->x = (int)(GW->boundX/2);
-    playerLoc->y = GW->boundY-4; P->loc = playerLoc;
+    playerLoc->y = GW->boundY-4;
+    P->loc = playerLoc;
 
     GW->P = P;
 }

@@ -9,6 +9,7 @@
 #include "lib/main.h"
 #include "lib/player.h"
 #include "lib/enemy.h"
+#include "lib/img.h"
 
 void initializeEnemies(GameWindow* GW){
     EnemyLL* enemyLL = malloc(sizeof(EnemyLL));
@@ -31,16 +32,16 @@ void initializeEnemies(GameWindow* GW){
         E->loc = loc;
 
         if(i % 5 == 0){
-            E->img1 = GW->images->farEnemy1;
-            E->img2 = GW->images->farEnemy2;
+            E->img1 = searchImgTable(GW,"img/farEnemy1.txt");
+            E->img2 = searchImgTable(GW,"img/farEnemy2.txt");
         }
         else if(i % 5 == 1 || i % 5 == 2){
-            E->img1 = GW->images->midEnemy1;
-            E->img2 = GW->images->midEnemy2;
+            E->img1 = searchImgTable(GW,"img/midEnemy1.txt");
+            E->img2 = searchImgTable(GW,"img/midEnemy2.txt");
         }
         else{
-            E->img1 = GW->images->nearEnemy1;
-            E->img2 = GW->images->nearEnemy2;
+            E->img1 = searchImgTable(GW,"img/nearEnemy1.txt");
+            E->img2 = searchImgTable(GW,"img/nearEnemy2.txt");
         }
         if(E->above) E->above->below = E;
         if(i % 5 == 4) temp = NULL;

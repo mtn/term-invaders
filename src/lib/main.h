@@ -27,7 +27,7 @@ typedef struct Image Image;
 typedef struct ImgTableElem ImgTableElem;
 
 typedef WINDOW Window;
-typedef ImgTableElement** ImgTable;
+typedef ImgTableElem** ImgTable;
 
 typedef struct {
     int x;
