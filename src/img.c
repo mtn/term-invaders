@@ -24,16 +24,24 @@ void derenderImg(GameWindow* GW, Image* img, int y, int x){
 }
 
 int hash(char* type){
-    int hash = 0;
+    long long hash = 0;
     for (int i = 0; i < strlen(type); i++)
         hash += hash*7 + type[i];
-    return hash % NUM_IMAGES;
+    return (int)(hash % NUM_IMAGES);
 }
 
 Image* loadImage(char* filePath){
     int xDim, yDim;
     Image* img = malloc(sizeof(Image));
-    FILE* fp = fopen(filePath,"r");
+    char fullPath[24] = "img/";
+    strcat(fullPath,filePath);
+    FILE* fp = fopen(fullPath,"r");
+    if(fp == NULL){
+        printw("File open failure!");
+        getch();
+        endwin();
+        exit(EXIT_FAILURE);
+    }
     fscanf(fp,"%d,%d",&xDim,&yDim);
 
     char** imgStr = malloc(yDim*sizeof(char*));
@@ -49,13 +57,18 @@ Image* loadImage(char* filePath){
 }
 
 void loadImages(GameWindow* GW){
-    GW->images = malloc(NUM_IMAGES*sizeof(ImgTableElem*));
-    Image* img;
+    GW->images = calloc(NUM_IMAGES,sizeof(ImgTableElem*));
+    for(int i = 0; i < NUM_IMAGES; i++){
+        GW->images[i] = NULL;
+    }
     DIR *dir;
     struct dirent *ent;
     if ((dir = opendir("img")) != NULL){
-        while ((ent = readdir(dir)) != NULL)
-            insertImg(GW,ent->d_name,loadImage(ent->d_name)); // parsing the type or something would be nicer
+        while ((ent = readdir(dir)) != NULL){
+            if(strcmp(".",ent->d_name) && strcmp("..",ent->d_name)){
+                insertImg(GW,ent->d_name,loadImage(ent->d_name)); // parsing the type or something would be nicer
+            }
+        }
         closedir (dir);
     }
     else perror("Image loading");
@@ -66,7 +79,10 @@ void insertImg(GameWindow* GW, char* type, Image* img){
     imgElem->type = type;
     imgElem->img = img;
 
-    int hashInd = hash(type), count;
+    int hashInd = hash(type), count=0;
+    printw("type: %s\n",type);
+    printw("%d \n",hashInd);
+    refresh();
     while(GW->images[hashInd] != NULL){
         hashInd++;
         hashInd %= NUM_IMAGES;
@@ -92,5 +108,4 @@ Image* searchImgTable(GameWindow* GW, char* type){
     }
    return NULL;
 }
-
 

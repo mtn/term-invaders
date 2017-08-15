@@ -1,7 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <ncurses.h>
 #include <stdbool.h>
 
 #include "main.h"

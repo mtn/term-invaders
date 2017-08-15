@@ -1,7 +1,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include <ncurses.h>
 #include <stdbool.h>
 
 #include "main.h"
@@ -37,7 +36,7 @@ void moveEnemyBlockRight(GameWindow* GW);
 bool moveEnemyBlockDown(GameWindow* GW);
 void derenderEnemies(GameWindow* GW);
 void fireProjectile(GameWindow* GW);
-void renderEnemiesandProjectiles(GameWindow* GW);
+void renderEnemiesAndProjectiles(GameWindow* GW);
 
 #endif /* ENEMY_H */
 

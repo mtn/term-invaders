@@ -1,5 +1,15 @@
-invader: src/main.c src/enemy.c src/player.c src/img.c src/lib/main.h src/lib/enemy.h src/lib/player.h src/lib/img.h
-	gcc -lncurses src/main.c src/enemy.c src/player.c src/img.c -o invader
+CC = gcc
+CXXFLAGS  = -Wall
+FRAMEWORK = -framework sdl2
 
+src = $(wildcard src/*.c)
+lib = $(wildcard src/lib/*.h)
+obj = $(src:.c=.o)
+
+invader: $(obj) $(lib)
+	$(CC) -o $@ $(obj) $(CXXFLAGS) $(FRAMEWORK)
+
+.PHONY: clean
 clean:
-	rm -rf *.o a.out invader
+	rm -f $(obj) invader
+

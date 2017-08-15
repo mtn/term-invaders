@@ -14,8 +14,8 @@
 #define NUM_ROWS            5
 #define SHIFT_INTERVAL    0.5
 
-#include <ncurses.h>
 #include <stdbool.h>
+#include <SDL2/SDL.h>
 
 
 typedef struct EnemyProjectiles EnemyProjectiles;
@@ -26,7 +26,6 @@ typedef struct Player Player;
 typedef struct Image Image;
 typedef struct ImgTableElem ImgTableElem;
 
-typedef WINDOW Window;
 typedef ImgTableElem** ImgTable;
 
 typedef struct {
@@ -35,7 +34,7 @@ typedef struct {
 } Coord, *CoordPtr;
 
 typedef struct {
-    Window* W;
+    SDL_Window* W;
     Player* P;
     EnemyLL* ELL;
     EnemyProjectiles* EP;
@@ -52,7 +51,7 @@ typedef struct {
 } GameWindow;
 
 void freeGW(GameWindow* GW);
-int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOptions, char** options); // returns selected index
+int renderMenu(SDL_Window* W, int menuWidth, char* title, char* subtitle, int numOptions, char** options); // returns selected index
 void runGame(GameWindow* GW);
 
 #endif /* MAIN_H */

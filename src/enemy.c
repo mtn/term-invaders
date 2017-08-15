@@ -183,7 +183,7 @@ void renderProjectiles(GameWindow* GW){
     }
 }
 
-void renderEnemiesandProjectiles(GameWindow* GW){
+void renderEnemiesAndProjectiles(GameWindow* GW){
     renderProjectiles(GW);
     renderEnemies(GW);
 }

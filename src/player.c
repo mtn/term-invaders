@@ -8,7 +8,17 @@
 
 void initializePlayer(GameWindow* GW){
     Player *P = malloc(sizeof(Player));
-    P->img = searchImgTable(GW,"img/player.txt");
+    P->img = searchImgTable(GW,"player.txt");
+    if(P->img == NULL){
+        printw("broken rip");
+        getch();
+    }
+    else{
+        printw("was here");
+        refresh();
+        renderImg(GW,P->img,10,10);
+        refresh();
+    }
     P->health = MAX_HEALTH;
 
     Coord *playerLoc = malloc(sizeof(Coord));

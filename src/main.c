@@ -1,4 +1,3 @@
-#include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -131,7 +130,7 @@ GameWindow* setupGame(int yMax, int xMax){
 void runGame(GameWindow* gameWin){
     initializePlayer(gameWin);
     initializeEnemies(gameWin);
-    renderEnemiesandProjectiles(gameWin);
+    renderEnemiesAndProjectiles(gameWin);
     renderPlayer(gameWin);
 
     int choice, random;
@@ -146,7 +145,7 @@ void runGame(GameWindow* gameWin){
             random = rand() % 2; // 1/2 chance of enemy shot being fired
             if(random) fireProjectile(gameWin);
 
-            renderEnemiesandProjectiles(gameWin);
+            renderEnemiesAndProjectiles(gameWin);
             gameWin->state = !gameWin->state;
             t = clock();
         }
@@ -173,20 +172,8 @@ void runGame(GameWindow* gameWin){
     getch();
 }
 
-void initCurses(){
-    initscr();
-    noecho();
-    curs_set(0);
-    cbreak();
-    keypad(stdscr,TRUE);
-
-    start_color();
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
-    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-}
-
 int hashFunction(char* imageName){
-    int sum;
+    int sum = 0;
     for(int i = 0; i < strlen(imageName); i++){
         sum += (int)imageName[i];
     }
@@ -194,9 +181,8 @@ int hashFunction(char* imageName){
 }
 
 int main(){
-    int yMax, xMax, renderStatus, startHeight, startWidth;
+    int yMax, xMax, startHeight, startWidth;
     srand(time(NULL));
-    initCurses();
     getmaxyx(stdscr,yMax,xMax);
 
     runStartScreen(startHeight=20,startWidth=80,yMax,xMax);

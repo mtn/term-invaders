@@ -33,3 +33,5 @@ invader
 *.dSYM/
 *.su
 test.*
+
+*.swp
